@@ -60,7 +60,7 @@ def QueTenganAlgúnCódigo(geometrías, códigos):
 
 ''' Controles de calidad '''
 
-def TieneQueSerPunto():
+def DebeSerPunto():
     '''
     Comunica un error si la geometría no es de tipo Punto
     '''
@@ -68,7 +68,7 @@ def TieneQueSerPunto():
     if type(g) is not Point:
 	    raise GeometryException('Las geometrías con este código deben ser de tipo Punto', g.Points[0])
 
-def TieneQueSerLinea():
+def DebeSerLinea():
     '''
     Comunica un error si la geometría no es de tipo Línea
     '''
@@ -76,7 +76,7 @@ def TieneQueSerLinea():
     if type(g) is not Line:
 	    raise GeometryException('Las geometrías con este código deben ser de tipo Linea', g.Points[0])
 
-def TieneQueSerTexto():
+def DebeSerTexto():
     '''
     Comunica un error si la geometría no es de tipo Texto
     '''
@@ -84,7 +84,7 @@ def TieneQueSerTexto():
     if type(g) is not Text:
 	    raise GeometryException('Las geometrías con este código deben ser de tipo Texto', g.Points[0])
 
-def TieneQueSerPoligono():
+def DebeSerPoligono():
     '''
     Comunica un error si la geometría no es de tipo Polígono
     '''
@@ -92,7 +92,7 @@ def TieneQueSerPoligono():
     if type(g) is not Polygon:
 	    raise GeometryException('Las geometrías con este código deben ser de tipo Polígono', g.Points[0])
 
-def TieneQueSerComplejo():
+def DebeSerComplejo():
     '''
     Comunica un error si la geometría no es de tipo Complejo
     '''
@@ -100,35 +100,35 @@ def TieneQueSerComplejo():
     if type(g) is not Complex:
 	    raise GeometryException('Las geometrías con este código deben ser de tipo Complejo', g.Points[0])
 
-def TieneQueTenerUnUnicoCodigo():
+def DebeTenerUnUnicoCodigo():
     '''
     Comunica un error si la geometría tiene más de un código
     '''
     if g.Codes.Count > 1:
 	    raise GeometryException('Las geometrías con este código deben tener un único código', g.Points[0])
 
-def TieneQueTenerXCodigos(x):
+def DebeTenerXCodigos(x):
     '''
     Comunica un error si la geometría no tiene X códigos
     '''
     if g.Codes.Count != x:
 	    raise GeometryException('Las geometrías con este código deben tener {} códigos'.format(x), g.Points[0])
 
-def TieneQueTenerAlMenosXCodigos(x):
+def DebeTenerAlMenosXCodigos(x):
     '''
     Comunica un error si la geometría no tiene al menos X códigos
     '''
     if g.Codes.Count < x:
 	    raise GeometryException('Las geometrías con este código deben tener al menos {} códigos'.format(x), g.Points[0])
 
-def TieneQueTenerMasDeXCodigos(x):
+def DebeTenerMasDeXCodigos(x):
     '''
     Comunica un error si la geometría no tiene más de X códigos
     '''
     if g.Codes.Count <= x:
 	    raise GeometryException('Las geometrías con este código deben tener más de {} códigos'.format(x), g.Points[0])
 
-def TieneQueTenerUnAreaSuperiorA(valor):
+def DebeTenerUnAreaSuperiorA(valor):
     '''
     Comunica un error si la geometría tiene un área inferior a X
     '''
@@ -139,7 +139,7 @@ def TieneQueTenerUnAreaSuperiorA(valor):
     if g.Area <= valor:
 	    raise GeometryException('Las geometrías con este código deben tener un área superior a {}'.format(valor), g.Points[0])
 
-def TieneQueTenerUnAreaSuperiorOIgualA(valor):
+def DebeTenerUnAreaSuperiorOIgualA(valor):
     '''
     Comunica un error si la geometría tiene un área inferior a X
     '''
@@ -150,7 +150,7 @@ def TieneQueTenerUnAreaSuperiorOIgualA(valor):
     if g.Area < valor:
 	    raise GeometryException('Las geometrías con este código deben tener un área superior o igual a {}'.format(valor), g.Points[0])
 
-def TieneQueTenerUnAreaInferiorA(valor):
+def DebeTenerUnAreaInferiorA(valor):
     '''
     Comunica un error si la geometría tiene un área superior o igual a X
     '''
@@ -161,7 +161,7 @@ def TieneQueTenerUnAreaInferiorA(valor):
     if g.Area >= valor:
 	    raise GeometryException('Las geometrías con este código deben tener un área inferior a {}'.format(valor), g.Points[0])
 
-def TieneQueTenerUnAreaInferiorOIgualAA(valor):
+def DebeTenerUnAreaInferiorOIgualAA(valor):
     '''
     Comunica un error si la geometría tiene un área superior o igual a X
     '''
