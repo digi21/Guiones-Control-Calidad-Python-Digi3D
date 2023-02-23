@@ -622,12 +622,47 @@ def cuyas_maximas_minimas_solapen_con(geometrías, geometria):
 
 
 @quality_control()
-def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_inferior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
+def al_tocar_lineas_debe_haber_una_diferencia_de_z_inferior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
+    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    candidatos = no_eliminadas(digi3d.current_view())
+    candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
+    candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
+
+    errores_detectados = []
+
+    intersecciones = digi3d.get_intersections(geometry, candidatos)
+    for coordenadas_interseccion in intersecciones:
+        geometrias_que_llegan_a_esta_interseccion = intersecciones[coordenadas_interseccion]
+        vertice_geometria_analizando = geometrias_que_llegan_a_esta_interseccion[geometry]
+        coordenada_de_geometria_analizando = geometry[vertice_geometria_analizando]
+        coordenada_z_comparar = coordenada_de_geometria_analizando[2]
+
+        for otra_geometria in geometrias_que_llegan_a_esta_interseccion:
+            if otra_geometria == geometry:
+                continue
+
+            vertice_otra_geometria = geometrias_que_llegan_a_esta_interseccion[otra_geometria]
+            coordenada_z_otra_geometria = otra_geometria[vertice_otra_geometria][2]
+
+            diferenciaZ = abs(coordenada_z_otra_geometria - coordenada_z_comparar)
+            if diferenciaZ >= tolerancia:
+                errores_detectados.append(digi3d.GeometryError("Las geometrías se tocan con una diferencia en la coordenada Z de {} (superior o igual a {})".format(diferenciaZ, tolerancia), coordenada_de_geometria_analizando))
+
+                if adding_geometry:
+                    # Si estamos en modo interactivo, nos sobra con informarle al usuario del primer error
+                    return errores_detectados
+
+    return errores_detectados
+
+@quality_control()
+def al_tocar_lineas_debe_haber_una_diferencia_de_z_inferior_o_igual_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
     'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
     
+    errores_detectados = []
+
     intersecciones = digi3d.get_intersections(geometry, candidatos)
     for coordenadas_interseccion in intersecciones:
         geometrias_que_llegan_a_esta_interseccion = intersecciones[coordenadas_interseccion]
@@ -644,15 +679,23 @@ def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_inferior_a(geometry, add
 
             diferenciaZ = abs(coordenada_z_otra_geometria - coordenada_z_comparar)
             if diferenciaZ > tolerancia:
-                return digi3d.GeometryError("Intersección en la que la diferencia en coordenada Z es {} (superior a {})".format(diferenciaZ, tolerancia), coordenada_de_geometria_analizando)
+                errores_detectados.append(digi3d.GeometryError("Las geometrías se tocan con una diferencia en la coordenada Z de {} (superior a {})".format(diferenciaZ, tolerancia), coordenada_de_geometria_analizando))
+
+                if adding_geometry:
+                    # Si estamos en modo interactivo, nos sobra con informarle al usuario del primer error
+                    return errores_detectados
+
+    return errores_detectados
 
 @quality_control()
-def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_superior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
+def al_tocar_lineas_debe_haber_una_diferencia_de_z_superior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
     'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
     
+    errores_detectados = []
+
     intersecciones = digi3d.get_intersections(geometry, candidatos)
     for coordenadas_interseccion in intersecciones:
         geometrias_que_llegan_a_esta_interseccion = intersecciones[coordenadas_interseccion]
@@ -669,13 +712,108 @@ def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_superior_a(geometry, add
 
             diferenciaZ = abs(coordenada_z_otra_geometria - coordenada_z_comparar)
             if diferenciaZ <= tolerancia:
-                return digi3d.GeometryError("Intersección en la que la diferencia en coordenada Z es {} (inferior a {})".format(diferenciaZ, tolerancia), coordenada_de_geometria_analizando)
+                errores_detectados.append(digi3d.GeometryError("Las geometrías se tocan con una diferencia en la coordenada Z de {} (inferior o igual a {})".format(diferenciaZ, tolerancia), coordenada_de_geometria_analizando))
+
+                if adding_geometry:
+                    # Si estamos en modo interactivo, nos sobra con informarle al usuario del primer error
+                    return errores_detectados
+
+    return errores_detectados
 
 @quality_control()
-def no_puede_linea_cruza_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error si esta se cruza con otra línea. '
+def al_tocar_lineas_debe_haber_una_diferencia_de_z_superior_o_igual_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
+    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    candidatos = no_eliminadas(digi3d.current_view())
+    candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
+    candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
+    
+    errores_detectados = []
+
+    intersecciones = digi3d.get_intersections(geometry, candidatos)
+    for coordenadas_interseccion in intersecciones:
+        geometrias_que_llegan_a_esta_interseccion = intersecciones[coordenadas_interseccion]
+        vertice_geometria_analizando = geometrias_que_llegan_a_esta_interseccion[geometry]
+        coordenada_de_geometria_analizando = geometry[vertice_geometria_analizando]
+        coordenada_z_comparar = coordenada_de_geometria_analizando[2]
+
+        for otra_geometria in geometrias_que_llegan_a_esta_interseccion:
+            if otra_geometria == geometry:
+                continue
+
+            vertice_otra_geometria = geometrias_que_llegan_a_esta_interseccion[otra_geometria]
+            coordenada_z_otra_geometria = otra_geometria[vertice_otra_geometria][2]
+
+            diferenciaZ = abs(coordenada_z_otra_geometria - coordenada_z_comparar)
+            if diferenciaZ < tolerancia:
+                errores_detectados.append(digi3d.GeometryError("Las geometrías se tocan con una diferencia en la coordenada Z de {} (inferior a {})".format(diferenciaZ, tolerancia), coordenada_de_geometria_analizando))
+
+                if adding_geometry:
+                    # Si estamos en modo interactivo, nos sobra con informarle al usuario del primer error
+                    return errores_detectados
+
+    return errores_detectados
+
+@quality_control()
+def al_tocar_lineas_debe_haber_una_diferencia_de_z_igual_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
+    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    candidatos = no_eliminadas(digi3d.current_view())
+    candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
+    candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
+    
+    errores_detectados = []
+
+    intersecciones = digi3d.get_intersections(geometry, candidatos)
+    for coordenadas_interseccion in intersecciones:
+        geometrias_que_llegan_a_esta_interseccion = intersecciones[coordenadas_interseccion]
+        vertice_geometria_analizando = geometrias_que_llegan_a_esta_interseccion[geometry]
+        coordenada_de_geometria_analizando = geometry[vertice_geometria_analizando]
+        coordenada_z_comparar = coordenada_de_geometria_analizando[2]
+
+        for otra_geometria in geometrias_que_llegan_a_esta_interseccion:
+            if otra_geometria == geometry:
+                continue
+
+            vertice_otra_geometria = geometrias_que_llegan_a_esta_interseccion[otra_geometria]
+            coordenada_z_otra_geometria = otra_geometria[vertice_otra_geometria][2]
+
+            diferenciaZ = abs(coordenada_z_otra_geometria - coordenada_z_comparar)
+            if diferenciaZ != tolerancia:
+                errores_detectados.append(digi3d.GeometryError("Intersección en la que la diferencia en coordenada Z es {} (distinto a {})".format(diferenciaZ, tolerancia), coordenada_de_geometria_analizando))
+
+                if adding_geometry:
+                    # Si estamos en modo interactivo, nos sobra con informarle al usuario del primer error
+                    return errores_detectados
+
+    return errores_detectados
+
+@quality_control()
+def no_puede_linea_cruzar_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
+    'Si la geometría que se está analizando es una línea, comunica un error si esta se cruza con otra línea.'
     if type(geometry) is not digi3d.Line:
         return
 
-    if alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.across(geometry, línea)):
-        return digi3d.GeometryError(mensaje)
+    candidatos = no_eliminadas(digi3d.current_view())
+    candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
+    candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_lineas_analizar)
+
+    errores_detectados = []
+
+    for candidato in candidatos:
+        if candidato == geometry:
+            continue
+
+        vertices_de_cruce = digi3d.relations.LineLine.get_cross_vertices(geometry, candidato, adding_geometry)
+        if len(vertices_de_cruce) == 0:
+            continue
+        
+        if adding_geometry:
+            return digi3d.GeometryRelationError(candidato, mensaje, geometry[vertices_de_cruce[0]])
+
+        for vertice in vertices_de_cruce:
+            errores_detectados.append(digi3d.GeometryRelationError(candidato, mensaje, geometry[vertice]))
+
+    if len(errores_detectados) == 0:
+        return
+
+    return errores_detectados  
+
