@@ -4,7 +4,7 @@ import digi3d.relations
 ''' Utilidades que usan los controles de calidad '''
 
 def es_area(g):
-    '''Devuelve verdadero si la geometría es de tipo área (polígono o línea cerrada)'''
+    'Devuelve verdadero si la geometría es de tipo área (polígono o línea cerrada)'
 
     if type(g) is digi3d.Polygon:
         return True
@@ -58,8 +58,8 @@ def tiene_el_codigo_con_comodines(g, nombre_código):
     return False
 
 def tiene_algun_codigo_de_etiqueta(g, etiqueta):
-    ''' Analiza si la geometría tiene algún código de entre los códigos (de la tabla de códigos activa) que tienen asignada una determinada etiqueta
-    '''
+    'Analiza si la geometría tiene algún código de entre los códigos (de la tabla de códigos activa) que tienen asignada una determinada etiqueta'
+
     tabla_codigos = digi3d.current_view().digi_tab
 
     for codigo in tabla_codigos:
@@ -109,7 +109,7 @@ def tiene_algun_codigo_con_comodines(g, códigos_con_comodines):
 
     return False
 
-''' Utilidades para secuencias de geometrías '''
+' Utilidades para secuencias de geometrías '
 
 def eliminadas(geometrías):
     '''Devuelve el subconjunto de las geometrías pasadas por parámetro que  están eliminadas.
@@ -166,9 +166,7 @@ def que_tengan_algun_codigo_de_etiqueta(geometrías, etiqueta):
     return filter(lambda geometría : tiene_algun_codigo_de_etiqueta(geometría, etiqueta), geometrías)
 
 def alguna_geometria(geometría_analizando, callback_incluir_geometria, callback_condicion):
-    ''' Itera por todas las geometrías del archivo de dibujo y devuelve verdadero si se localiza una con la
-    que devuelvan True tanto la función callback_incluir_geometria como la función callback_concicion
-    '''
+    'Itera por todas las geometrías del archivo de dibujo y devuelve verdadero si se localiza una con la que devuelvan True tanto la función callback_incluir_geometria como la función callback_concicion'
     for g in no_eliminadas(digi3d.current_view()):
         if not callback_incluir_geometria(g):
             continue
@@ -190,13 +188,11 @@ def algun_punto_con_codigo(geometría_analizando, código_o_etiqueta_puntos_anal
 def algun_texto_con_codigo(geometría_analizando, código_o_etiqueta_textos_analizar, callback_condicion):
     return alguna_geometria(geometría_analizando, lambda g: type(g) is digi3d.Text and tiene_el_codigo_o_etiqueta(g, código_o_etiqueta_textos_analizar), callback_condicion)
 
-''' Controles de calidad '''
+'Controles de calidad'
 
 @quality_control()
 def debe_area_adyacente_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un área, comunica un error si no se localiza ningún área en el archivo de dibujo que sea adyacente al área que se está analizando
-    '''
+    'Si la geometría que se está analizando es un área, comunica un error si no se localiza ningún área en el archivo de dibujo que sea adyacente al área que se está analizando'
     if not es_area(geometry):
         return
 
@@ -205,9 +201,7 @@ def debe_area_adyacente_area(geometry, adding_geometry, code_index, código_o_et
 
 @quality_control()
 def debe_area_completamente_dentro_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo otro área que dentro de la cual esté la geometría que se está analizando (no se admite que determinados vértices de este área coincidan con la del otro área)
-    '''
+    'Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo otro área que dentro de la cual esté la geometría que se está analizando (no se admite que determinados vértices de este área coincidan con la del otro área)'
     if not es_area(geometry):
         return
 
@@ -216,9 +210,7 @@ def debe_area_completamente_dentro_area(geometry, adding_geometry, code_index, c
 
 @quality_control()
 def debe_area_dentro_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo otro área que dentro de la cual esté la geometría que se está analizando (se admite que determinados vértices de este área coincidan con la del otro área)
-    '''
+    'Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo otro área que dentro de la cual esté la geometría que se está analizando (se admite que determinados vértices de este área coincidan con la del otro área)'
     if not es_area(geometry):
         return
 
@@ -227,9 +219,7 @@ def debe_area_dentro_area(geometry, adding_geometry, code_index, código_o_etiqu
 
 @quality_control()
 def debe_area_disjunta_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un área, comunica un error si se localiza en el archivo de dibujo otra área que no sea disjunta (es decir, que solape, cruce, esté en el interior...) de la geometría ques e está analizando
-    '''
+    'Si la geometría que se está analizando es un área, comunica un error si se localiza en el archivo de dibujo otra área que no sea disjunta (es decir, que solape, cruce, esté en el interior...) de la geometría ques e está analizando'
     if not es_area(geometry):
         return
 
@@ -238,9 +228,7 @@ def debe_area_disjunta_area(geometry, adding_geometry, code_index, código_o_eti
 
 @quality_control()
 def debe_area_igual_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo otro área que sea idéntica a la geometría que se está analizando
-    '''
+    'Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo otro área que sea idéntica a la geometría que se está analizando'
     if not es_area(geometry):
         return
 
@@ -249,9 +237,7 @@ def debe_area_igual_area(geometry, adding_geometry, code_index, código_o_etique
 
 @quality_control()
 def debe_area_se_une_con_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo un área que se una con la geometría que se está analizando
-    '''
+    'Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo un área que se una con la geometría que se está analizando'
     if not es_area(geometry):
         return
 
@@ -260,9 +246,7 @@ def debe_area_se_une_con_area(geometry, adding_geometry, code_index, código_o_e
 
 @quality_control()
 def debe_area_solapa_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo un área que solape el área que se está analizando. 
-    '''
+    'Si la geometría que se está analizando es un área, comunica un error si no se localiza en el archivo de dibujo un área que solape el área que se está analizando.'
     if not es_area(geometry):
         return
 
@@ -271,9 +255,7 @@ def debe_area_solapa_area(geometry, adding_geometry, code_index, código_o_etiqu
 
 @quality_control()
 def debe_atributo_igual_valor(geometry, adding_geometry, code_index, nombre_atributo, valor_esperado, mensaje):
-    '''
-    Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado
-    '''
+    'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado'
     atributos = geometry.attributes
 
     if nombre_atributo not in atributos:
@@ -284,9 +266,7 @@ def debe_atributo_igual_valor(geometry, adding_geometry, code_index, nombre_atri
 
 @quality_control()
 def debe_atributo_bbdd_igual_valor(geometry, adding_geometry, code_index, nombre_atributo, valor_esperado, mensaje):
-    '''
-    Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado
-    '''
+    'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado'
     atributosCodigo = geometry.codes[code_index].attributes
 
     if nombre_atributo not in atributosCodigo:
@@ -297,9 +277,7 @@ def debe_atributo_bbdd_igual_valor(geometry, adding_geometry, code_index, nombre
 
 @quality_control()
 def debe_atributo_bbdd_mayor_igual_valor(geometry, adding_geometry, code_index, nombre_atributo, valor, mensaje):
-    '''
-    Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo es menor que el valor esperado
-    '''
+    'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo es menor que el valor esperado'
     atributosCodigo = geometry.codes[code_index].attributes
 
     if nombre_atributo not in atributosCodigo:
@@ -310,9 +288,7 @@ def debe_atributo_bbdd_mayor_igual_valor(geometry, adding_geometry, code_index, 
 
 @quality_control()
 def debe_linea_adyacente_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área que solape dicha línea. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área que solape dicha línea.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -321,9 +297,7 @@ def debe_linea_adyacente_area(geometry, adding_geometry, code_index, código_o_e
 
 @quality_control()
 def debe_linea_completamente_dentro_de_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área que solape dicha línea. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área que solape dicha línea. '
     if type(geometry) is not digi3d.Line:
         return
 
@@ -332,9 +306,7 @@ def debe_linea_completamente_dentro_de_area(geometry, adding_geometry, code_inde
 
 @quality_control()
 def debe_linea_cruza_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si esta no cruza ningún área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no cruza ningún área del archivo de dibujo. '
     if type(geometry) is not digi3d.Line:
         return
 
@@ -343,9 +315,7 @@ def debe_linea_cruza_area(geometry, adding_geometry, code_index, código_o_etiqu
 
 @quality_control()
 def debe_linea_cruza_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si esta no cruza ningún área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no cruza ningún área del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -354,9 +324,7 @@ def debe_linea_cruza_linea(geometry, adding_geometry, code_index, código_o_etiq
 
 @quality_control()
 def debe_linea_disjunta_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si esta toca (cruza, está dentro, etc) algún área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si esta toca (cruza, está dentro, etc) algún área del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -365,9 +333,7 @@ def debe_linea_disjunta_area(geometry, adding_geometry, code_index, código_o_et
 
 @quality_control()
 def debe_linea_disjunta_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si se encuentra en el archivo de dibujo otra línea que no sea disjunta con esta. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si se encuentra en el archivo de dibujo otra línea que no sea disjunta con esta.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -376,9 +342,7 @@ def debe_linea_disjunta_linea(geometry, adding_geometry, code_index, código_o_e
 
 @quality_control()
 def debe_linea_igual_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si se encuentra en el archivo de dibujo otra línea que no sea igual que esta. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si se encuentra en el archivo de dibujo otra línea que no sea igual que esta.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -387,9 +351,7 @@ def debe_linea_igual_linea(geometry, adding_geometry, code_index, código_o_etiq
 
 @quality_control()
 def debe_linea_se_une_con_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si esta no se une con algún área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no se une con algún área del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -398,9 +360,7 @@ def debe_linea_se_une_con_area(geometry, adding_geometry, code_index, código_o_
 
 @quality_control()
 def debe_linea_se_une_con_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error ésta no se une con ninguna línea del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error ésta no se une con ninguna línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -409,9 +369,7 @@ def debe_linea_se_une_con_linea(geometry, adding_geometry, code_index, código_o
 
 @quality_control()
 def debe_linea_solapa_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error ésta no solapa con ninguna línea del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error ésta no solapa con ninguna línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -420,9 +378,7 @@ def debe_linea_solapa_linea(geometry, adding_geometry, code_index, código_o_eti
 
 @quality_control()
 def debe_linea_termina_dentro_de_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si esta no termina dentro de un área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no termina dentro de un área del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -431,9 +387,7 @@ def debe_linea_termina_dentro_de_area(geometry, adding_geometry, code_index, có
 
 @quality_control()
 def debe_linea_termina_en_borde_de_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si esta no termina en el borde de un área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no termina en el borde de un área del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -442,9 +396,7 @@ def debe_linea_termina_en_borde_de_area(geometry, adding_geometry, code_index, c
 
 @quality_control()
 def debe_linea_termina_en_extremo_de_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error ésta no termina en el extremo de otra línea del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error ésta no termina en el extremo de otra línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -453,9 +405,7 @@ def debe_linea_termina_en_extremo_de_linea(geometry, adding_geometry, code_index
 
 @quality_control()
 def debe_linea_termina_en_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error ésta no termina en otra línea del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error ésta no termina en otra línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -464,9 +414,7 @@ def debe_linea_termina_en_linea(geometry, adding_geometry, code_index, código_o
 
 @quality_control()
 def debe_punto_coincide_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no coincide con un área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no coincide con un área del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -475,9 +423,7 @@ def debe_punto_coincide_area(geometry, adding_geometry, code_index, código_o_et
 
 @quality_control()
 def debe_punto_coincide_extremo_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no termina en el extremo de otra línea del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no termina en el extremo de otra línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -486,9 +432,7 @@ def debe_punto_coincide_extremo_linea(geometry, adding_geometry, code_index, có
 
 @quality_control()
 def debe_punto_coincide_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no termina en una línea (excluyendo sus extremos) del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no termina en una línea (excluyendo sus extremos) del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -497,9 +441,7 @@ def debe_punto_coincide_linea(geometry, adding_geometry, code_index, código_o_e
 
 @quality_control()
 def debe_punto_coincide_punto(geometry, adding_geometry, code_index, código_o_etiqueta_puntos_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no coincide con otro punto del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no coincide con otro punto del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -508,9 +450,7 @@ def debe_punto_coincide_punto(geometry, adding_geometry, code_index, código_o_e
 
 @quality_control()
 def debe_punto_disjunto_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no es disjunto con algún área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no es disjunto con algún área del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -519,9 +459,7 @@ def debe_punto_disjunto_area(geometry, adding_geometry, code_index, código_o_et
 
 @quality_control()
 def debe_punto_disjunto_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no es disjunto con alguna línea del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no es disjunto con alguna línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -530,9 +468,7 @@ def debe_punto_disjunto_linea(geometry, adding_geometry, code_index, código_o_e
 
 @quality_control()
 def debe_punto_disjunto_punto(geometry, adding_geometry, code_index, código_o_etiqueta_puntos_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no es disjunto con otro punto del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no es disjunto con otro punto del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -541,9 +477,7 @@ def debe_punto_disjunto_punto(geometry, adding_geometry, code_index, código_o_e
 
 @quality_control()
 def debe_punto_en_el_interior_de_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es un punto, comunica un error si este no está en el interior de algún área del archivo de dibujo. 
-    '''
+    'Si la geometría que se está analizando es un punto, comunica un error si este no está en el interior de algún área del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -552,49 +486,37 @@ def debe_punto_en_el_interior_de_area(geometry, adding_geometry, code_index, có
 
 @quality_control()
 def debe_ser_area(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si la geometría no es de tipo área (polígonos o líneas cerradas)
-    '''
+    'Comunica un error si la geometría no es de tipo área (polígonos o líneas cerradas)'
     if not es_area(geometry):
 	    return digi3d.GeometryError('Las geometrías con el código {} deben ser polígonos o líneas cerradas'.format(geometry.codes[0].name))
 
 @quality_control()
 def debe_ser_complejo(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si la geometría no es de tipo Complejo
-    '''
+    'Comunica un error si la geometría no es de tipo Complejo'
     if type(geometry) is not digi3d.Complex:
 	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Texto'.format(geometry.codes[0].name))
 
 @quality_control()
 def debe_ser_linea(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si la geometría no es de tipo Línea
-    '''
+    'Comunica un error si la geometría no es de tipo Línea'
     if type(geometry) is not digi3d.Line:
 	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Línea'.format(geometry.codes[0].name))
 
 @quality_control()
 def debe_ser_poligono(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si la geometría no es de tipo Polígono
-    '''
+    'Comunica un error si la geometría no es de tipo Polígono'
     if type(geometry) is not digi3d.Polygon:
 	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Polígono'.format(geometry.codes[0].name))
 
 @quality_control()
 def debe_ser_punto(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si la geometría no es de tipo Punto
-    '''
+    'Comunica un error si la geometría no es de tipo Punto'
     if type(geometry) is not digi3d.Point:
 	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Punto'.format(geometry.codes[0].name))
 
 @quality_control()
 def debe_ser_texto(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si la geometría no es de tipo Texto
-    '''
+    'Comunica un error si la geometría no es de tipo Texto'
     if type(geometry) is not digi3d.Text:
 	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Texto'.format(geometry.codes[0].name))
 
@@ -624,8 +546,7 @@ def debe_tener_perimetro_mayor(geometry, adding_geometry, code_index, perimetro)
 
 @quality_control()
 def debe_tener_todos_los_vertices_con_la_misma_coordenada_z(geometry, adding_geometry, code_index):
-    '''Comunica un error si localiza un vértice con la coordenada Z distinta de la del vértice anterior
-    '''
+    'Comunica un error si localiza un vértice con la coordenada Z distinta de la del vértice anterior'
     zInicial = geometry[0][2]
 
     for coordenada in geometry:
@@ -634,9 +555,7 @@ def debe_tener_todos_los_vertices_con_la_misma_coordenada_z(geometry, adding_geo
 
 @quality_control()
 def debe_tener_coordenadas_z_crecientes(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si se localiza un vértice cuya coordenada Z sea inferior o igual a la coordenada Z del vértice anterior.
-    '''
+    'Comunica un error si se localiza un vértice cuya coordenada Z sea inferior o igual a la coordenada Z del vértice anterior.'
     zPrevia = None
 
     for coordenada in geometry:
@@ -653,9 +572,7 @@ def debe_tener_coordenadas_z_crecientes(geometry, adding_geometry, code_index):
 
 @quality_control()
 def debe_tener_coordenadas_z_crecientes_moderado(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si se localiza un vértice cuya coordenada Z sea inferior a la coordenada Z del vértice anterior.
-    '''
+    'Comunica un error si se localiza un vértice cuya coordenada Z sea inferior a la coordenada Z del vértice anterior.'
     zPrevia = geometry[0][2]
 
     for coordenada in geometry:
@@ -668,9 +585,7 @@ def debe_tener_coordenadas_z_crecientes_moderado(geometry, adding_geometry, code
 
 @quality_control()
 def debe_tener_coordenadas_z_decrecientes(geometry, adding_geometry, code_index):
-    '''
-    Comunica un error si se localiza un vértice cuya coordenada Z sea superior o igual a la coordenada Z del vértice anterior.
-    '''
+    'Comunica un error si se localiza un vértice cuya coordenada Z sea superior o igual a la coordenada Z del vértice anterior.'
     zPrevia = None
 
     for coordenada in geometry:
@@ -687,8 +602,7 @@ def debe_tener_coordenadas_z_decrecientes(geometry, adding_geometry, code_index)
 
 @quality_control()
 def debe_tener_coordenadas_z_decrecientes_moderado(geometry, adding_geometry, code_index):
-    '''Comunica un error si se localiza un vértice cuya coordenada Z sea superior a la coordenada Z del vértice anterior.
-    '''
+    'Comunica un error si se localiza un vértice cuya coordenada Z sea superior a la coordenada Z del vértice anterior.'
     zPrevia = geometry[0][2]
 
     for coordenada in geometry:
@@ -709,9 +623,7 @@ def cuyas_maximas_minimas_solapen_con(geometrías, geometria):
 
 @quality_control()
 def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_inferior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
-    '''
-    Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.
-    '''
+    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
@@ -736,9 +648,7 @@ def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_inferior_a(geometry, add
 
 @quality_control()
 def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_superior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
-    '''
-    Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.
-    '''
+    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
@@ -763,9 +673,7 @@ def al_cruzar_con_lineas_debe_haber_una_diferencia_de_z_superior_a(geometry, add
 
 @quality_control()
 def no_puede_linea_cruza_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    '''
-    Si la geometría que se está analizando es una línea, comunica un error si esta se cruza con otra línea. 
-    '''
+    'Si la geometría que se está analizando es una línea, comunica un error si esta se cruza con otra línea. '
     if type(geometry) is not digi3d.Line:
         return
 
