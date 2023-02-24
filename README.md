@@ -1,16 +1,16 @@
 # Guiones de control de calidad en Digi3D.NET
 
-Este repositorio contiene guiones que se pueden pegar en la pestaña Python del programa [Editor de Tablas de Códigos](https://ayuda.digi21.net/digi3d-net/referencia/editor-de-tablas-de-codigos) para luego añadirlos en el campo [Guion](https://ayuda.digi21.net/digi3d-net/referencia/editor-de-tablas-de-codigos/pestanas/codigos/propiedades-del-codigo#guion) de cada código.
+Este repositorio contiene guiones que se pueden pegar en la pestaña Python del programa [Editor de Tablas de Códigos](https://ayuda.digi21.net/digi3d-net/referencia/editor-de-tablas-de-codigos) para luego añadirlos en el campo __Controles de calidad a aplicar__ de cada código.
 De esta manera podemos añadir controles de calidad de una manera muy sencilla.
 
-Si quieres que añadamos tus propios controles de calidad, tan solo tienes que hacer un pull-request 😉.
+Si quieres que añadamos tus propios controles de calidad, tan solo tienes que clonar este repositorio, añadir tus controles de calidad y hacer un pull-request 😉.
 
 ## Declaración de un control de calidad
 
 El _Editor de Tablas de Códigos_ de _Digi3D.NET_ y el propio _Digi3D.NET_ localizan las funciones que realizan controles de calidad enumerando todas las que estén definidas en el entorno _Python_ que cumplan con las siguientes condiciones:
 
 1. Que están decoradas o envueltas con el el _function\_wrapper_ denominado __@quality_control__ 
-2. Que recibar al menos los parámetros `geometry`, `adding_geometry` y `code_index`
+2. Que recibar al menos los parámetros `geometry`, `adding_geometry` y `code_index`.
 3. Que tengan una descripción.
 
 ### Function wrapper
