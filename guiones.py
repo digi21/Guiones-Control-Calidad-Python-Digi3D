@@ -182,6 +182,9 @@ def algun_area_con_codigo(geometría_analizando, código_o_etiqueta_areas_analiz
 def alguna_linea_con_codigo(geometría_analizando, código_o_etiqueta_lineas_analizar, callback_condicion):
     return alguna_geometria(geometría_analizando, lambda g: type(g) is digi3d.Line and tiene_el_codigo_o_etiqueta(g, código_o_etiqueta_lineas_analizar), callback_condicion)
 
+def alguna_linea_sin_codigo(geometría_analizando, código_o_etiqueta_lineas_analizar, callback_condicion):
+    return alguna_geometria(geometría_analizando, lambda g: type(g) is digi3d.Line and not tiene_el_codigo_o_etiqueta(g, código_o_etiqueta_lineas_analizar), callback_condicion)
+
 def algun_punto_con_codigo(geometría_analizando, código_o_etiqueta_puntos_analizar, callback_condicion):
     return alguna_geometria(geometría_analizando, lambda g: type(g) is digi3d.Point and tiene_el_codigo_o_etiqueta(g, código_o_etiqueta_puntos_analizar), callback_condicion)
 
@@ -864,5 +867,13 @@ def no_puede_punto_estar_a_menor_distancia_de_cualquier_otro_punto(geometry, add
         return digi3d.GeometryRelationError(lista_de_puntos_cercanos, 'Este punto está muy cerca de estos puntos')
 
 
+@quality_control()
+def si_es_linea_solo_puede_continuar_con_lineas_con_codigo(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
+    'Si la geometría que se está analizando es una línea, comunica un error ésta continua con otra que no tenga el código o códigos especificados.'
+    if type(geometry) is not digi3d.Line:
+        return
+
+    if alguna_linea_sin_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.endpoint_join_endpoint(geometry, línea)):
+        return digi3d.GeometryError(mensaje)
 
 
