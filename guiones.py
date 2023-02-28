@@ -294,7 +294,7 @@ def atributo_bbdd_no_puede_ser_nulo(geometry, adding_geometry, code_index, nombr
         return digi3d.DatabaseFieldError('Atributo con valor nulo', code_index, nombre_atributo)
 
 @quality_control()
-def debe_atributo_bbdd_igual_valor(geometry, adding_geometry, code_index, nombre_atributo, valor_esperado, mensaje):
+def atributo_bbdd_debe_ser_igual(geometry, adding_geometry, code_index, nombre_atributo, valor_esperado, mensaje):
     'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado'
     atributosCodigo = geometry.codes[code_index].attributes
 
@@ -305,7 +305,7 @@ def debe_atributo_bbdd_igual_valor(geometry, adding_geometry, code_index, nombre
         return digi3d.DatabaseFieldError(mensaje, code_index, nombre_atributo)
 
 @quality_control()
-def debe_tener_asignado_un_atributo_de_bbdd_con_valor_igual_a(geometry, adding_geometry, code_index, nombre_atributo, valor, mensaje):
+def atributo_bbd_debe_ser_mayor_o_igual(geometry, adding_geometry, code_index, nombre_atributo, valor, mensaje):
     'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo es menor que el valor esperado'
     atributosCodigo = geometry.codes[code_index].attributes
 
@@ -460,7 +460,7 @@ def si_es_punto_debe_coincidir_con_extremo_linea(geometry, adding_geometry, code
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
-def debe_punto_coincide_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
+def si_es_punto_debe_coincidir_con_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
     'Si la geometría que se está analizando es un punto, comunica un error si este no termina en una línea (excluyendo sus extremos) del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
@@ -839,7 +839,7 @@ def si_es_linea_no_puede_cruzar_linea(geometry, adding_geometry, code_index, có
     return errores_detectados  
 
 @quality_control()
-def no_puede_punto_estar_a_menor_distancia_de_cualquier_otro_punto(geometry, adding_geometry, code_index, distancia):
+def si_es_punto_no_puede_estar_a_menor_distancia_de_cualquier_otro_punto(geometry, adding_geometry, code_index, distancia):
     'Si la geometría que se está analizando es de tipo punto, comprueba su distancia al resto de puntos del archivo de dibujo y devuelve error en caso de que esta sea inferior al parámetro distancia'
     if type(geometry) is not digi3d.Point:
         return
