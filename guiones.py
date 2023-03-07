@@ -908,5 +908,5 @@ def marcar_error_si_diferencia_z_al_proyectar_mdt_inferior_a(geometry, adding_ge
 
         distancia_calculada = abs(z_proyectada - coordenada[2])
         if distancia_calculada < distancia:
-            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es superior a: {}'.format(distancia_calculada, distancia), coordenada)
+            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es inferior a: {}'.format(distancia_calculada, distancia), coordenada)
 
