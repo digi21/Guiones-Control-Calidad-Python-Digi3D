@@ -889,7 +889,7 @@ def marcar_error_si_diferencia_z_al_proyectar_mdt_superior_a(geometry, adding_ge
         z_proyectada = v.project(coordenada)
 
         if z_proyectada is None:
-            pass
+            continue
 
         distancia_calculada = abs(z_proyectada - coordenada[2])
         if distancia_calculada > distancia:
@@ -904,7 +904,7 @@ def marcar_error_si_diferencia_z_al_proyectar_mdt_inferior_a(geometry, adding_ge
         z_proyectada = v.project(coordenada)
 
         if z_proyectada is None:
-            pass
+            continue
 
         distancia_calculada = abs(z_proyectada - coordenada[2])
         if distancia_calculada < distancia:
