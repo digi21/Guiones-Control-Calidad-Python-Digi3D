@@ -880,4 +880,33 @@ def si_es_linea_solo_puede_continuar_con_lineas_con_codigo(geometry, adding_geom
     if alguna_linea_sin_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.endpoint_join_endpoint(geometry, línea)):
         return digi3d.GeometryError(mensaje)
 
+@quality_control()
+def marcar_error_si_diferencia_z_al_proyectar_mdt_superior_a(geometry, adding_geometry, code_index, distancia):
+    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia en la coordenada Z entre un vértice y algún MDT es superior a una distancia'
+    v = digi3d.current_view()
+
+    for coordenada in geometry:
+        z_proyectada = v.project(coordenada)
+
+        if z_proyectada is None:
+            pass
+
+        distancia_calculada = abs(z_proyectada - coordenada[2])
+        if distancia_calculada > distancia:
+            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es superior a: {}'.format(distancia_calculada, distancia), coordenada)
+
+@quality_control()
+def marcar_error_si_diferencia_z_al_proyectar_mdt_inferior_a(geometry, adding_geometry, code_index, distancia):
+    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia en la coordenada Z entre un vértice y algún MDT es inferior a una distancia'
+    v = digi3d.current_view()
+
+    for coordenada in geometry:
+        z_proyectada = v.project(coordenada)
+
+        if z_proyectada is None:
+            pass
+
+        distancia_calculada = abs(z_proyectada - coordenada[2])
+        if distancia_calculada < distancia:
+            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es superior a: {}'.format(distancia_calculada, distancia), coordenada)
 
