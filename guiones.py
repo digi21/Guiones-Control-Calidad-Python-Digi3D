@@ -168,6 +168,10 @@ def que_tengan_algun_codigo_de_etiqueta(geometrías, etiqueta):
 def alguna_geometria(geometría_analizando, callback_incluir_geometria, callback_condicion):
     'Itera por todas las geometrías del archivo de dibujo y devuelve verdadero si se localiza una con la que devuelvan True tanto la función callback_incluir_geometria como la función callback_concicion'
     for g in no_eliminadas(digi3d.current_view()):
+        # No contamos la geometría que se está analizando
+        if g == geometría_analizando:
+            pass
+        
         if not callback_incluir_geometria(g):
             continue
 
