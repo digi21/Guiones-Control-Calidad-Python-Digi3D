@@ -276,6 +276,15 @@ def si_es_area_debe_solapar_otra_area(geometry, adding_geometry, code_index, có
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
+def si_es_area_no_puede_solapar_otra_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
+    'Si la geometría que se está analizando es un área, comunica un error si se localiza en el archivo de dibujo un área que solape el área que se está analizando.'
+    if not es_area(geometry):
+        return
+
+    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.overlap(geometry, área)[0]):
+        return digi3d.GeometryError(mensaje)
+
+@quality_control()
 def debe_tener_asignado_un_atributo(geometry, adding_geometry, code_index, nombre_atributo, valor_esperado, mensaje):
     'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado'
     atributos = geometry.attributes
