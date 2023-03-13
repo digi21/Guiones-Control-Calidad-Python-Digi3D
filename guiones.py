@@ -3,6 +3,15 @@ import digi3d.relations
 
 'Utilidades que usan los controles de calidad'
 
+def distancia_menor_que(a, b, calculadora, distancia):
+    'Calcula la distancia entre los vértices de los puntos y devuelve True si se localiza algún par para el cual la distancia es inferior al valor pasado por parámetros.'
+    for coordenada_a in a:
+        for coordenada_b in b:
+            if calculadora.calculate_distance_2d(coordenada_a, coordenada_b) < distancia:
+                return True
+            
+    return False
+
 def es_maestra(coordenada_z, equidistancia, intervalo_maestras=5):
 	'Devuelve verdadero si la coordenada Z pasada por parámetro corresponde a la de una curva de nivel maestra para una equidistancia de curvas y un determinado intervalo de curvas de nivel'
 	return 0 == coordenada_z % (intervalo_maestras * equidistancia)
@@ -860,25 +869,26 @@ def si_es_linea_no_puede_cruzar_linea(geometry, adding_geometry, code_index, có
     return errores_detectados  
 
 @quality_control()
-def si_es_punto_no_puede_estar_a_menor_distancia_de_cualquier_otro_punto(geometry, adding_geometry, code_index, distancia):
+def no_puede_estar_a_menor_distancia_que(geometry, adding_geometry, code_index, código_o_etiqueta_puntos_analizar, distancia):
     'Si la geometría que se está analizando es de tipo punto, comprueba su distancia al resto de puntos del archivo de dibujo y devuelve error en caso de que esta sea inferior al parámetro distancia'
     if type(geometry) is not digi3d.Point:
         return
 
-    geometriasNoEliminadas = filter(lambda geometría : not geometría.deleted, digi3d.current_view())
-    puntosArchivoDibujo = filter(lambda geometría : type(geometría) is digi3d.Point, geometriasNoEliminadas)
+    v = digi3d.current_view()
 
     # No podemos calcular la distancia entre puntos sin más, porque puede que la ventana de dibujo esté en coordenadas elipsoidales, de manera que las
     # coordenadas que nos van a llegar no son ortométricas, sino ángulos. La ventana de dibujo proporciona una calculadora geográfica que calcula 
     # distancias correctamente
-    calculadora  = digi3d.current_view().geographic_calculator
+    calculadora  = v.geographic_calculator
 
     lista_de_puntos_cercanos = []
+    
+    for otra_geometria in que_tengan_algun_codigo_de_etiqueta(no_eliminadas(v), código_o_etiqueta_puntos_analizar):
+        if otra_geometria == geometry:
+            continue
 
-    for punto in puntosArchivoDibujo:
-        distancia_entre_los_puntos = calculadora.calculate_distance_2d(geometry[0], punto[0])
-        if distancia_entre_los_puntos < distancia:
-            lista_de_puntos_cercanos.append(punto)
+        if distancia_menor_que(geometry, otra_geometria, calculadora, distancia):
+            lista_de_puntos_cercanos.append(otra_geometria)
 
             if adding_geometry:
                 # Estamos en modo interactivo: El usuario está digitalizando una geometría, de manera que con detectar el primer error es suficiente
@@ -886,7 +896,6 @@ def si_es_punto_no_puede_estar_a_menor_distancia_de_cualquier_otro_punto(geometr
 
     if( len(lista_de_puntos_cercanos) > 0):
         return digi3d.GeometryRelationError(lista_de_puntos_cercanos, 'Este punto está muy cerca de estos puntos')
-
 
 @quality_control()
 def si_es_linea_solo_puede_continuar_con_lineas_con_codigo(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
