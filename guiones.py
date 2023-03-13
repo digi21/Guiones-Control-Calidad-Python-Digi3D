@@ -313,7 +313,7 @@ def atributo_bbdd_debe_ser_igual(geometry, adding_geometry, code_index, nombre_a
         return digi3d.DatabaseFieldError(mensaje, code_index, nombre_atributo)
 
 @quality_control()
-def atributo_bbd_debe_ser_mayor_o_igual(geometry, adding_geometry, code_index, nombre_atributo, valor, mensaje):
+def atributo_bbdd_debe_ser_mayor_o_igual(geometry, adding_geometry, code_index, nombre_atributo, valor, mensaje):
     'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo es menor que el valor esperado'
     atributosCodigo = geometry.codes[code_index].attributes
 
