@@ -3,6 +3,10 @@ import digi3d.relations
 
 'Utilidades que usan los controles de calidad'
 
+def es_maestra(coordenada_z, equidistancia, intervalo_maestras=5):
+	'Devuelve verdadero si la coordenada Z pasada por parámetro corresponde a la de una curva de nivel maestra para una equidistancia de curvas y un determinado intervalo de curvas de nivel'
+	return 0 == coordenada_z % (intervalo_maestras * equidistancia)
+
 def es_area(g):
     'Devuelve verdadero si la geometría es de tipo área (polígono o línea cerrada)'
 
@@ -584,7 +588,7 @@ def debe_tener_todos_los_vertices_con_la_misma_coordenada_z(geometry, adding_geo
 
     for coordenada in geometry:
         if coordenada[2] != zInicial:
-            return digi3d.GeometryError('Las geometrías con este código deben tener todos los vértices con la misma coordenada Z', coordenada)
+            return digi3d.GeometryError('Las geometrías con este código deben tener todos los vértices con la misma coordenada Z {} ({})'.format(coordenada[2], zInicial), coordenada)
 
 @quality_control()
 def debe_tener_coordenadas_z_crecientes(geometry, adding_geometry, code_index):
@@ -910,3 +914,14 @@ def marcar_error_si_diferencia_z_al_proyectar_mdt_inferior_a(geometry, adding_ge
         if distancia_calculada < distancia:
             return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es inferior a: {}'.format(distancia_calculada, distancia), coordenada)
 
+@quality_control()
+def la_coordenada_z_del_primer_vertice_debe_ser_el_de_una_curva_maestra(geometry, adding_geometry, code_index):
+    'Comunica un error si la coordenada Z del primer vértice de la geometría no coincide con las de las curvas de nivel maestras para la equidistancia actual y para un intervalo de curvas de 5'
+    if not es_maestra(geometry[0][2], digi3d.current_view().equidistance):
+        return digi3d.GeometryError('No es maestra')
+
+@quality_control()
+def la_coordenada_z_del_primer_vertice_debe_ser_el_de_una_curva_fina(geometry, adding_geometry, code_index):
+    'Comunica un error si la coordenada Z del primer vértice de la geometría no coincide con las de las curvas de nivel finas para la equidistancia actual y para un intervalo de curvas de 5'
+    if es_maestra(geometry[0][2], digi3d.current_view().equidistance):
+        return digi3d.GeometryError('No es fina')
