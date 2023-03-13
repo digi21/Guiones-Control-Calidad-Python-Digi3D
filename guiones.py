@@ -80,11 +80,15 @@ def tiene_el_codigo_o_etiqueta(g, nombre_codigo_o_etiqueta):
         Si el código pasado es una etiqueta, se devuelve verdadero si la geometría tiene un código de entre los que tienen asignada dicha etiqueta en la tabla de códigos activa.
         Si el código pasado no es una etiqueta, se busca con comodines, de manera que se puede poner por ejemplo 0204*
     '''
+    for codigo in nombre_codigo_o_etiqueta.split():
+        if codigo[0] == '#':
+            if tiene_algun_codigo_de_etiqueta(g, codigo[1:]):
+                return True
 
-    if nombre_codigo_o_etiqueta[0] == '#':
-        return tiene_algun_codigo_de_etiqueta(g, nombre_codigo_o_etiqueta[1:])
-
-    return tiene_el_codigo_con_comodines(g, nombre_codigo_o_etiqueta)
+        if tiene_el_codigo_con_comodines(g, codigo):
+            return True
+        
+    return False
 
 def tiene_algun_codigo(g, códigos):
     '''Indica si la entidad tiene alguno de los códigos pasados por parámetro.
