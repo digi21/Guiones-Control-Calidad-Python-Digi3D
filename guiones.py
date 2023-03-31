@@ -9,12 +9,25 @@ def distancia_menor_que(a, b, calculadora, distancia):
         for coordenada_b in b:
             if calculadora.calculate_distance_2d(coordenada_a, coordenada_b) < distancia:
                 return True
-            
+
     return False
 
+def es_curva_fina_o_maestra(coordenada_z, equidistancia):
+    return 0 == coordenada_z % equidistancia
+
 def es_maestra(coordenada_z, equidistancia, intervalo_maestras=5):
-	'Devuelve verdadero si la coordenada Z pasada por parámetro corresponde a la de una curva de nivel maestra para una equidistancia de curvas y un determinado intervalo de curvas de nivel'
-	return 0 == coordenada_z % (intervalo_maestras * equidistancia)
+    'Devuelve verdadero si la coordenada Z pasada por parámetro corresponde a la de una curva de nivel maestra para una equidistancia de curvas y un determinado intervalo de curvas de nivel'
+    if not es_curva_fina_o_maestra(coordenada_z, equidistancia):
+        return False
+
+    return 0 == coordenada_z % (intervalo_maestras * equidistancia)
+
+def es_fina(coordenada_z, equidistancia, intervalo_maestras=5):
+    'Devuelve verdadero si la coordenada Z pasada por parámetro corresponde a la de una curva de nivel maestra para una equidistancia de curvas y un determinado intervalo de curvas de nivel'
+    if not es_curva_fina_o_maestra(coordenada_z, equidistancia):
+        return False
+
+    return 0 != coordenada_z % (intervalo_maestras * equidistancia)
 
 def es_area(g):
     'Devuelve verdadero si la geometría es de tipo área (polígono o línea cerrada)'
@@ -945,5 +958,15 @@ def la_coordenada_z_del_primer_vertice_debe_ser_el_de_una_curva_maestra(geometry
 @quality_control()
 def la_coordenada_z_del_primer_vertice_debe_ser_el_de_una_curva_fina(geometry, adding_geometry, code_index):
     'Comunica un error si la coordenada Z del primer vértice de la geometría no coincide con las de las curvas de nivel finas para la equidistancia actual y para un intervalo de curvas de 5'
-    if es_maestra(geometry[0][2], digi3d.current_view().equidistance):
+    if not es_fina(geometry[0][2], digi3d.current_view().equidistance):
         return digi3d.GeometryError('No es fina')
+
+@quality_control()
+def debe_tener_ancho_y_alto_mayor_o_igual_valor_o_linea(geometry, adding_geometry, code_index, ancho, alto):
+    'Comunica un error si el ancho y el largo no son mayores que los parámetros'
+    ancho_geometria, alto_geometria, _ = geometry.max - geometry.min
+
+    if min(ancho_geometria, alto_geometria) >= ancho and max(ancho_geometria, alto_geometria) >= alto:
+        return
+
+    return digi3d.GeometryError('Esta geometría tiene un ancho inferior a {} y un largo inferior a {} y por lo tanto debería haberse digitalizado como una línea')
