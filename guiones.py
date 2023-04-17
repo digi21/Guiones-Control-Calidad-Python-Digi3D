@@ -619,9 +619,14 @@ def debe_tener_perimetro_mayor(geometry, adding_geometry, code_index, perimetro)
 @quality_control()
 def debe_tener_todos_los_vertices_con_la_misma_coordenada_z(geometry, adding_geometry, code_index):
     'Comunica un error si localiza un vértice con la coordenada Z distinta de la del vértice anterior'
-    if not digi3d.same_coordinates(geometry.min[2], geometry.max[2]):
-        return digi3d.GeometryError('Las geometrías con este código deben tener todos los vértices con la misma coordenada Z {} ({})'.format(coordenada[2], zInicial), coordenada)
-
+    if digi3d.same_coordinates(geometry.min[2], geometry.max[2]):
+        return
+    
+    zInicial = geometry[0][2]
+    for coordenada in geometry:
+        if coordenada[2] != zInicial:
+            return digi3d.GeometryError('Las geometrías con este código deben tener todos los vértices con la misma coordenada Z', coordenada)
+        
 @quality_control()
 def debe_tener_coordenadas_z_crecientes(geometry, adding_geometry, code_index):
     'Comunica un error si se localiza un vértice cuya coordenada Z sea inferior o igual a la coordenada Z del vértice anterior.'
