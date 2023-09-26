@@ -909,7 +909,7 @@ def no_puede_estar_a_menor_distancia_que(geometry, adding_geometry, code_index, 
 
     lista_de_puntos_cercanos = []
     
-    for otra_geometria in que_tengan_algun_codigo_de_etiqueta(no_eliminadas(v), código_o_etiqueta_puntos_analizar):
+    for otra_geometria in que_tengan_el_codigo_o_etiqueta(no_eliminadas(v), código_o_etiqueta_puntos_analizar):
         if otra_geometria == geometry:
             continue
 
