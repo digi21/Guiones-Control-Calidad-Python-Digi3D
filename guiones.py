@@ -983,3 +983,33 @@ def debe_tener_ancho_y_alto_mayor_o_igual_valor_o_linea(geometry, adding_geometr
         return
 
     return digi3d.GeometryError('Esta geometría tiene un ancho inferior a {} y un largo inferior a {} y por lo tanto debería haberse digitalizado como una línea')
+
+@quality_control()
+def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_superior_a_valor(geometry, adding_geometry, code_index, distancia):
+    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia entre el valor absoluto de la Z de algún vértice y el valor absoluto de la proyección en el MDT es superior a una distancia'
+    v = digi3d.current_view()
+
+    for coordenada in geometry:
+        z_proyectada = v.project(coordenada)
+
+        if z_proyectada is None:
+            continue
+
+        distancia_calculada = abs(int(z_proyectada) - int(coordenada[2]))
+        if distancia_calculada > distancia:
+            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es superior a: {}'.format(distancia_calculada, distancia), coordenada)
+
+@quality_control()
+def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_interior_a_valor(geometry, adding_geometry, code_index, distancia):
+        'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia entre el valor absoluto de la Z de algún vértice y el valor absoluto de la proyección en el MDT es inferios a una distancia'
+v = digi3d.current_view()
+
+    for coordenada in geometry:
+        z_proyectada = v.project(coordenada)
+
+        if z_proyectada is None:
+            continue
+
+        distancia_calculada = abs(int(z_proyectada) - int(coordenada[2]))
+        if distancia_calculada < distancia:
+            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es superior a: {}'.format(distancia_calculada, distancia), coordenada)
