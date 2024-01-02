@@ -1001,8 +1001,8 @@ def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_superior
 
 @quality_control()
 def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_interior_a_valor(geometry, adding_geometry, code_index, distancia):
-        'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia entre el valor absoluto de la Z de algún vértice y el valor absoluto de la proyección en el MDT es inferios a una distancia'
-v = digi3d.current_view()
+    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia entre el valor absoluto de la Z de algún vértice y el valor absoluto de la proyección en el MDT es inferios a una distancia'
+    v = digi3d.current_view()
 
     for coordenada in geometry:
         z_proyectada = v.project(coordenada)
