@@ -602,7 +602,7 @@ def debe_tener_area_igual_o_mayor(geometry, adding_geometry, code_index, area_mi
     '''Si el archivo de dibujo está en coordenadas geográficas, el valor devuelto por la propiedad .area de la geometría estará
     calculado con las coordenadas en grados. Para solucionar este problema, utilizamos la calculadora geográfica de la ventana de 
     dibujo que sabe en qué sistema de coordenadas, está y en caso de ser geográfico, calcula el área en metros cuadrados'''
-    if digi3d.current_view().geographic_calculator.calculate_area(geometry) < area_minima:
+    if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < area_minima:
         return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un área mayor o igual que {}'.format(geometry.codes[0].name, area_minima))
 
 @quality_control()
