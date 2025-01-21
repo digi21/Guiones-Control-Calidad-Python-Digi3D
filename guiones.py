@@ -2183,7 +2183,7 @@ def asignar_grosor(geometry, code_drawing, representations, nombre_codigo, groso
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	representations[0].weight = grosor_asignar
+	representations[0].weight = int(grosor_asignar)
 	return representations
 
 @dynamic_representation_rule()
@@ -2198,7 +2198,7 @@ def asignar_grosor_si_atributo_bbdd_menor_valor(geometry, code_drawing, represen
 		return representations
 
 	if atributosCodigo[nombre_atributo] < valor_esperado:
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2214,7 +2214,7 @@ def asignar_grosor_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, 
 		return representations
 
 	if atributosCodigo[nombre_atributo] <= valor_esperado:
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2231,7 +2231,7 @@ def asignar_grosor_si_atributo_bbdd_igual_valor(geometry, code_drawing, represen
 		return representations
 
 	if atributosCodigo[nombre_atributo] == valor_esperado:
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2247,7 +2247,7 @@ def asignar_grosor_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, repres
 		return representations
 
 	if atributosCodigo[nombre_atributo] >= valor_esperado:
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2263,7 +2263,7 @@ def asignar_grosor_si_atributo_bbdd_mayor_valor(geometry, code_drawing, represen
 		return representations
 
 	if atributosCodigo[nombre_atributo] > valor_esperado:
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2280,7 +2280,7 @@ def asignar_grosor_si_atributo_bbdd_es_nulo(geometry, code_drawing, representati
 		return representations
 
 	if atributosCodigo[nombre_atributo] is None:
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2303,7 +2303,7 @@ def asignar_grosor_si_multiples_atributos_bbdd_igual_valores(geometry, code_draw
 		if atributosCodigo[nombre_atributo] != valor_esperado:
 			return representations
 	
-	representations[0].weight = grosor_asignar
+	representations[0].weight = int(grosor_asignar)
 	return representations
 
 @dynamic_representation_rule()
@@ -2316,7 +2316,7 @@ def asignar_grosor_si_area_inferior_valor(geometry, code_drawing, representation
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2330,7 +2330,7 @@ def asignar_grosor_si_area_inferior_o_igual_valor(geometry, code_drawing, repres
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) <= float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2344,7 +2344,7 @@ def asignar_grosor_si_area_igual_valor(geometry, code_drawing, representations, 
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) == float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2358,7 +2358,7 @@ def asignar_grosor_si_area_mayor_igual_valor(geometry, code_drawing, representat
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) >= float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2372,7 +2372,7 @@ def asignar_grosor_si_area_mayor_valor(geometry, code_drawing, representations, 
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) > float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2383,7 +2383,7 @@ def asignar_grosor_si_perimetro_inferior_valor(geometry, code_drawing, represent
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2394,7 +2394,7 @@ def asignar_grosor_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, r
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2405,7 +2405,7 @@ def asignar_grosor_si_perimetro_igual_valor(geometry, code_drawing, representati
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2416,7 +2416,7 @@ def asignar_grosor_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, repr
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2427,7 +2427,7 @@ def asignar_grosor_si_perimetro_mayor_valor(geometry, code_drawing, representati
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(area):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2438,7 +2438,7 @@ def asignar_grosor_si_z_minima_inferior_valor(geometry, code_drawing, representa
 		return representations
 
 	if geometry.min[2] < float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2449,7 +2449,7 @@ def asignar_grosor_si_z_minima_inferior_o_igual_valor(geometry, code_drawing, re
 		return representations
 
 	if geometry.min[2] <= float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2460,7 +2460,7 @@ def asignar_grosor_si_z_minima_igual_valor(geometry, code_drawing, representatio
 		return representations
 
 	if geometry.min[2] == float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2471,7 +2471,7 @@ def asignar_grosor_si_z_minima_mayor_o_igual_valor(geometry, code_drawing, repre
 		return representations
 
 	if geometry.min[2] >= float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2482,7 +2482,7 @@ def asignar_grosor_si_z_minima_mayor_valor(geometry, code_drawing, representatio
 		return representations
 
 	if geometry.min[2] > float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2493,7 +2493,7 @@ def asignar_grosor_si_z_maxima_inferior_valor(geometry, code_drawing, representa
 		return representations
 
 	if geometry.max[2] < float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2504,7 +2504,7 @@ def asignar_grosor_si_z_maxima_inferior_o_igual_valor(geometry, code_drawing, re
 		return representations
 
 	if geometry.max[2] <= float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2515,7 +2515,7 @@ def asignar_grosor_si_z_maxima_igual_valor(geometry, code_drawing, representatio
 		return representations
 
 	if geometry.max[2] == float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2526,7 +2526,7 @@ def asignar_grosor_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing, repre
 		return representations
 
 	if geometry.max[2] >= float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2537,7 +2537,7 @@ def asignar_grosor_si_z_maxima_mayor_valor(geometry, code_drawing, representatio
 		return representations
 
 	if geometry.max[2] > float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2549,7 +2549,7 @@ def asignar_grosor_si_altura_menor_valor(geometry, code_drawing, representations
 		return representations
 
 	if geometry.max[2] - geometry.min[2] < float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2560,7 +2560,7 @@ def asignar_grosor_si_altura_menor_o_igual_valor(geometry, code_drawing, represe
 		return representations
 
 	if geometry.max[2] - geometry.min[2] <= float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2571,7 +2571,7 @@ def asignar_grosor_si_altura_igual_valor(geometry, code_drawing, representations
 		return representations
 
 	if geometry.max[2] - geometry.min[2] == float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2582,7 +2582,7 @@ def asignar_grosor_si_altura_mayor_o_igual_valor(geometry, code_drawing, represe
 		return representations
 
 	if geometry.max[2] - geometry.min[2] >= float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2593,7 +2593,7 @@ def asignar_grosor_si_altura_mayor_valor(geometry, code_drawing, representations
 		return representations
 
 	if geometry.max[2] - geometry.min[2] > float(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2607,7 +2607,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_menor_valor(geometry, code_dr
 		return representations
 
 	if len(geometry.holes) < int(valor):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2621,7 +2621,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_menor_o_igual_valor(geometry,
 		return representations
 
 	if len(geometry.holes) <= int(numero_huecos):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2635,7 +2635,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_igual_valor(geometry, code_dr
 		return representations
 
 	if len(geometry.holes) == int(numero_huecos):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2649,7 +2649,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_mayor_o_igual_valor(geometry,
 		return representations
 
 	if len(geometry.holes) >= int(numero_huecos):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2663,7 +2663,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_mayor_valor(geometry, code_dr
 		return representations
 
 	if len(geometry.holes) > int(numero_huecos):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2674,7 +2674,7 @@ def asignar_grosor_si_numero_vertices_menor_valor(geometry, code_drawing, repres
 		return representations
 
 	if len(geometry) < int(numero_vertices):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2685,7 +2685,7 @@ def asignar_grosor_si_numero_vertices_menor_o_igual_valor(geometry, code_drawing
 		return representations
 
 	if len(geometry) <= int(numero_vertices):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2696,7 +2696,7 @@ def asignar_grosor_si_numero_vertices_igual_valor(geometry, code_drawing, repres
 		return representations
 
 	if len(geometry) == int(numero_vertices):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2707,7 +2707,7 @@ def asignar_grosor_si_numero_vertices_mayor_o_igual_valor(geometry, code_drawing
 		return representations
 
 	if len(geometry) >= int(numero_vertices):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
@@ -2718,6 +2718,6 @@ def asignar_grosor_si_numero_vertices_mayor_valor(geometry, code_drawing, repres
 		return representations
 
 	if len(geometry) > int(numero_vertices):
-		representations[0].weight = grosor_asignar
+		representations[0].weight = int(grosor_asignar)
 
 	return representations
