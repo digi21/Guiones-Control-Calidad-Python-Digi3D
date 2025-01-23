@@ -1593,7 +1593,7 @@ colores_atributo_bbdd = {}
 @dynamic_representation_rule()
 def asignar_color_aleatorio_segun_valor_atributo_bbdd(geometry, code_drawing, representations, nombre_codigo, nombre_atributo):
 	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
-	global coloresCampo
+	global colores_atributo_bbdd
 
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
@@ -2209,7 +2209,7 @@ colores_relleno_atributo_bbdd = {}
 @dynamic_representation_rule()
 def asignar_color_relleno_aleatorio_segun_valor_atributo_bbdd(geometry, code_drawing, representations, nombre_codigo, nombre_atributo):
 	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
-	global coloresCampo
+	global colores_relleno_atributo_bbdd
 
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
