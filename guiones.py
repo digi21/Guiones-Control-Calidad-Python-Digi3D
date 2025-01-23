@@ -1,5 +1,6 @@
 import digi3d
 import digi3d.relations
+import random
 
 'Utilidades que usan los controles de calidad'
 
@@ -1587,6 +1588,34 @@ def asignar_color_si_numero_vertices_mayor_valor(geometry, code_drawing, represe
 
 	return representations
 
+colores_atributo_bbdd = {}
+
+@dynamic_representation_rule()
+def asignar_color_aleatorio_segun_valor_atributo_bbdd(geometry, code_drawing, representations, nombre_codigo, nombre_atributo):
+	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
+	global coloresCampo
+
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
+
+	if nombre_atributo not in atributosCodigo:
+		return representations
+
+	valorAtributo = atributosCodigo[nombre_atributo]
+
+	if valorAtributo not in colores_atributo_bbdd:
+		r = random.randint(0, 255)
+		g = random.randint(0, 255)
+		b = random.randint(0, 255)
+		color = "#" + f"{r:02x}" + f"{g:02x}" + f"{b:02x}" + "ff"
+		colores_atributo_bbdd[valorAtributo] = color
+
+	representations[0].color = colores_atributo_bbdd[valorAtributo]
+
+	return representations
+
 # Reglas que cambian el color de relleno --------------------------------------------------------------------------
 
 @dynamic_representation_rule()
@@ -2172,6 +2201,35 @@ def asignar_color_relleno_si_numero_vertices_mayor_valor(geometry, code_drawing,
 	if len(geometry) > int(numero_vertices):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+colores_relleno_atributo_bbdd = {}
+
+@dynamic_representation_rule()
+def asignar_color_relleno_aleatorio_segun_valor_atributo_bbdd(geometry, code_drawing, representations, nombre_codigo, nombre_atributo):
+	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
+	global coloresCampo
+
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
+
+	if nombre_atributo not in atributosCodigo:
+		return representations
+
+	valorAtributo = atributosCodigo[nombre_atributo]
+
+	if valorAtributo not in colores_relleno_atributo_bbdd:
+		r = random.randint(0, 255)
+		g = random.randint(0, 255)
+		b = random.randint(0, 255)
+		color = "#" + f"{r:02x}" + f"{g:02x}" + f"{b:02x}" + "ff"
+		colores_relleno_atributo_bbdd[valorAtributo] = color
+
+	representations[0].fill_type = FillType.Color
+	representations[0].fill_color = colores_relleno_atributo_bbdd[valorAtributo]
 
 	return representations
 
