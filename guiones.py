@@ -1,8 +1,9 @@
 import digi3d
 import digi3d.relations
+from digi3d import FillType
 import random
 
-'Utilidades que usan los controles de calidad'
+# Utilidades --------------------------------------------------------------------------
 
 def texto_a_color(texto):
 	'Convierte un texto a color en formato hexadecimal de HTML'
@@ -169,7 +170,31 @@ def tiene_algun_codigo_con_comodines(g, códigos_con_comodines):
 
     return False
 
-' Utilidades para secuencias de geometrías '
+def compara_valor_menor_texto(valor, texto):
+	'Convierte el argumento texto al tipo del argumento valor y devuelve verdadero si el valor es menor que el texto'
+	return valor < type(valor)(texto)
+
+def compara_valor_menor_igual_texto(valor, texto):
+	'Convierte el argumento texto al tipo del argumento valor y devuelve verdadero si el valor es menor o igual que el texto'
+	return valor <= type(valor)(texto)
+
+def compara_valor_igual_texto(valor, texto):
+	'Convierte el argumento texto al tipo del argumento valor y devuelve verdadero si son iguales'
+	return valor == type(valor)(texto)
+
+def compara_valor_mayor_igual_texto(valor, texto):
+	'Convierte el argumento texto al tipo del argumento valor y devuelve verdadero si el valor es mayor o igual que el texto'
+	return valor >= type(valor)(texto)
+
+def compara_valor_mayor_texto(valor, texto):
+	'Convierte el argumento texto al tipo del argumento valor y devuelve verdadero si el valor es mayor que el texto'
+	return valor > type(valor)(texto)
+
+def compara_valor_distinto_texto(valor, texto):
+	'Convierte el argumento texto al tipo del argumento valor y devuelve verdadero si son distintos'
+	return valor != type(valor)(texto)
+
+# Utilidades que actúan con secuencias de geometrías  --------------------------------------------------------------------------
 
 def eliminadas(geometrías):
     '''Devuelve el subconjunto de las geometrías pasadas por parámetro que  están eliminadas.
@@ -262,7 +287,7 @@ def cuyas_maximas_minimas_solapen_con(geometrías, geometria):
     '''
     return filter(lambda g : g.maxmin_overlaps_2d(geometria), geometrías)
 
-'Controles de calidad'
+# Controles de calidad  --------------------------------------------------------------------------
 
 @quality_control()
 def si_es_area_debe_ser_adyacente_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
@@ -374,7 +399,7 @@ def atributo_bbdd_debe_ser_igual(geometry, adding_geometry, code_index, nombre_a
     if nombre_atributo not in atributosCodigo:
         return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].name, nombre_atributo))
 
-    if atributosCodigo[nombre_atributo] is None or atributosCodigo[nombre_atributo] != valor_esperado:
+    if atributosCodigo[nombre_atributo] is None or compara_valor_distinto_texto(atributosCodigo[nombre_atributo], valor_esperado):
         return digi3d.DatabaseFieldError(mensaje, code_index, nombre_atributo)
 
 @quality_control()
@@ -385,7 +410,7 @@ def atributo_bbdd_debe_ser_mayor_o_igual(geometry, adding_geometry, code_index, 
     if nombre_atributo not in atributosCodigo:
         return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].name, nombre_atributo))
 
-    if atributosCodigo[nombre_atributo] is None or atributosCodigo[nombre_atributo] < valor:
+    if atributosCodigo[nombre_atributo] is None or compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -1044,6 +1069,10 @@ def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_interior
         if distancia_calculada < distancia:
             return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es superior a: {}'.format(distancia_calculada, distancia), coordenada)
 
+# Reglas para la representación de geometrías --------------------------------------------------------------------------
+
+# Reglas que cambian el color  --------------------------------------------------------------------------
+
 @dynamic_representation_rule()
 def asignar_color(geometry, code_drawing, representations, nombre_codigo, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo (admite comodines)'
@@ -1052,7 +1081,6 @@ def asignar_color(geometry, code_drawing, representations, nombre_codigo, color_
 
 	representations[0].color = texto_a_color(color_asignar)
 	return representations
-
 
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
@@ -1065,7 +1093,7 @@ def asignar_color_si_atributo_bbdd_menor_valor(geometry, code_drawing, represent
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] < valor_esperado:
+	if compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
@@ -1081,7 +1109,7 @@ def asignar_color_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, r
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] <= valor_esperado:
+	if compara_valor_menor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
@@ -1097,7 +1125,7 @@ def asignar_color_si_atributo_bbdd_igual_valor(geometry, code_drawing, represent
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] == valor_esperado:
+	if compara_valor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
@@ -1113,7 +1141,7 @@ def asignar_color_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, represe
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] >= valor_esperado:
+	if compara_valor_mayor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
@@ -1129,7 +1157,7 @@ def asignar_color_si_atributo_bbdd_mayor_valor(geometry, code_drawing, represent
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] > valor_esperado:
+	if compara_valor_mayor_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
@@ -1151,6 +1179,22 @@ def asignar_color_si_atributo_bbdd_es_nulo(geometry, code_drawing, representatio
 	return representations
 
 @dynamic_representation_rule()
+def asignar_color_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo no tiene un valor nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
+
+	if nombre_atributo not in atributosCodigo:
+		return representations
+
+	if atributosCodigo[nombre_atributo] is not None:
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
 def asignar_color_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
@@ -1166,7 +1210,126 @@ def asignar_color_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawi
 		if nombre_atributo not in atributosCodigo:
 			return representations
 	
-		if atributosCodigo[nombre_atributo] != valor_esperado:
+		if compara_valor_distinto_texto(atributosCodigo[nombre_atributo], valor_esperado):
+			return representations
+	
+	representations[0].color = texto_a_color(color_asignar)
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_menor_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_menor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_atributo_diccionario_atributos_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene el valor valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if geometry.attributes[nombre_atributo] == valor_esperado:
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_atributo_diccionario_atributos_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor o igual que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_mayor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_atributo_diccionario_atributos_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_mayor_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_atributo_diccionario_atributos_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if geometry.attributes[nombre_atributo] is None:
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor que no sea nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if geometry.attributes[nombre_atributo] is not None:
+		representations[0].color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	lista_atributos_y_valores = atributos_y_valores.split(' ')
+
+	for i in range(0, len(lista_atributos_y_valores), 2):
+		nombre_atributo = lista_atributos_y_valores[i]
+		valor_esperado = lista_atributos_y_valores[i + 1]
+
+		if nombre_atributo not in geometry.attributes:
+			return representations
+	
+		if compara_valor_distinto_texto(geometry.attributes[nombre_atributo], valor_esperado):
 			return representations
 	
 	representations[0].color = texto_a_color(color_asignar)
@@ -1616,6 +1779,30 @@ def asignar_color_aleatorio_segun_valor_atributo_bbdd(geometry, code_drawing, re
 
 	return representations
 
+@dynamic_representation_rule()
+def asignar_color_aleatorio_segun_valor_atributo_diccionario_atributos(geometry, code_drawing, representations, nombre_codigo, nombre_atributo):
+	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
+	global colores_atributo_bbdd
+
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	valorAtributo = geometry.attributes[nombre_atributo]
+
+	if valorAtributo not in colores_atributo_bbdd:
+		r = random.randint(0, 255)
+		g = random.randint(0, 255)
+		b = random.randint(0, 255)
+		color = "#" + f"{r:02x}" + f"{g:02x}" + f"{b:02x}" + "ff"
+		colores_atributo_bbdd[valorAtributo] = color
+
+	representations[0].color = colores_atributo_bbdd[valorAtributo]
+
+	return representations
+
 # Reglas que cambian el color de relleno --------------------------------------------------------------------------
 
 @dynamic_representation_rule()
@@ -1639,7 +1826,24 @@ def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, r
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] < valor_esperado:
+	if compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor_esperado):
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
+
+	if nombre_atributo not in atributosCodigo:
+		return representations
+
+	if compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
@@ -1656,7 +1860,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_o_igual_valor(geometry, code_dr
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] <= valor_esperado:
+	if compara_valor_menor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
@@ -1673,7 +1877,7 @@ def asignar_color_relleno_si_atributo_bbdd_igual_valor(geometry, code_drawing, r
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] == valor_esperado:
+	if compara_valor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
@@ -1690,7 +1894,7 @@ def asignar_color_relleno_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing,
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] >= valor_esperado:
+	if compara_valor_mayor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
@@ -1707,7 +1911,7 @@ def asignar_color_relleno_si_atributo_bbdd_mayor_valor(geometry, code_drawing, r
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] > valor_esperado:
+	if compara_valor_mayor_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
@@ -1731,6 +1935,23 @@ def asignar_color_relleno_si_atributo_bbdd_es_nulo(geometry, code_drawing, repre
 	return representations
 
 @dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor que no es nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
+
+	if nombre_atributo not in atributosCodigo:
+		return representations
+
+	if atributosCodigo[nombre_atributo] is not None:
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
 def asignar_color_relleno_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
@@ -1746,7 +1967,149 @@ def asignar_color_relleno_si_multiples_atributos_bbdd_igual_valores(geometry, co
 		if nombre_atributo not in atributosCodigo:
 			return representations
 	
-		if atributosCodigo[nombre_atributo] != valor_esperado:
+		if compara_valor_distinto_texto(atributosCodigo[nombre_atributo], valor_esperado):
+			return representations
+	
+	representations[0].fill_type = FillType.Color
+	representations[0].fill_color = texto_a_color(color_asignar)
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_menor_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_menor_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_menor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene el valor valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor o igual que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_mayor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_mayor_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if geometry.attributes[nombre_atributo] is None:
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor que no es nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if geometry.attributes[nombre_atributo] is not None:
+		representations[0].fill_type = FillType.Color
+		representations[0].fill_color = texto_a_color(color_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_color_relleno_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	lista_atributos_y_valores = atributos_y_valores.split(' ')
+
+	for i in range(0, len(lista_atributos_y_valores), 2):
+		nombre_atributo = lista_atributos_y_valores[i]
+		valor_esperado = lista_atributos_y_valores[i + 1]
+
+		if nombre_atributo not in geometry.attributes:
+			return representations
+	
+		if compara_valor_distinto_texto(geometry.attributes[nombre_atributo], valor_esperado):
 			return representations
 	
 	representations[0].fill_type = FillType.Color
@@ -2208,7 +2571,7 @@ colores_relleno_atributo_bbdd = {}
 
 @dynamic_representation_rule()
 def asignar_color_relleno_aleatorio_segun_valor_atributo_bbdd(geometry, code_drawing, representations, nombre_codigo, nombre_atributo):
-	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
+	'Asigna un color aleatorio en función del valor de un campo de base de datos. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
 	global colores_relleno_atributo_bbdd
 
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
@@ -2230,6 +2593,33 @@ def asignar_color_relleno_aleatorio_segun_valor_atributo_bbdd(geometry, code_dra
 
 	representations[0].fill_type = FillType.Color
 	representations[0].fill_color = colores_relleno_atributo_bbdd[valorAtributo]
+
+	return representations
+
+colores_relleno_atributo = {}
+
+@dynamic_representation_rule()
+def asignar_color_relleno_aleatorio_segun_valor_atributo_diccionario_atributos(geometry, code_drawing, representations, nombre_codigo, nombre_atributo):
+	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
+	global colores_relleno_atributo
+
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	valorAtributo =  geometry.attributes[nombre_atributo]
+
+	if valorAtributo not in colores_relleno_atributo:
+		r = random.randint(0, 255)
+		g = random.randint(0, 255)
+		b = random.randint(0, 255)
+		color = "#" + f"{r:02x}" + f"{g:02x}" + f"{b:02x}" + "ff"
+		colores_relleno_atributo[valorAtributo] = color
+
+	representations[0].fill_type = FillType.Color
+	representations[0].fill_color = colores_relleno_atributo[valorAtributo]
 
 	return representations
 
@@ -2255,7 +2645,7 @@ def asignar_grosor_si_atributo_bbdd_menor_valor(geometry, code_drawing, represen
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] < valor_esperado:
+	if compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
@@ -2271,7 +2661,7 @@ def asignar_grosor_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, 
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] <= valor_esperado:
+	if compara_valor_menor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
@@ -2288,7 +2678,7 @@ def asignar_grosor_si_atributo_bbdd_igual_valor(geometry, code_drawing, represen
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] == valor_esperado:
+	if compara_valor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
@@ -2304,7 +2694,7 @@ def asignar_grosor_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, repres
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] >= valor_esperado:
+	if compara_valor_mayor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
@@ -2320,11 +2710,10 @@ def asignar_grosor_si_atributo_bbdd_mayor_valor(geometry, code_drawing, represen
 	if nombre_atributo not in atributosCodigo:
 		return representations
 
-	if atributosCodigo[nombre_atributo] > valor_esperado:
+	if compara_valor_mayor_texto(atributosCodigo[nombre_atributo], valor_esperado):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
-
 
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
@@ -2338,6 +2727,22 @@ def asignar_grosor_si_atributo_bbdd_es_nulo(geometry, code_drawing, representati
 		return representations
 
 	if atributosCodigo[nombre_atributo] is None:
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor que no es nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
+
+	if nombre_atributo not in atributosCodigo:
+		return representations
+
+	if atributosCodigo[nombre_atributo] is not None:
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
@@ -2358,7 +2763,128 @@ def asignar_grosor_si_multiples_atributos_bbdd_igual_valores(geometry, code_draw
 		if nombre_atributo not in atributosCodigo:
 			return representations
 	
-		if atributosCodigo[nombre_atributo] != valor_esperado:
+		if compara_valor_distinto_texto(atributosCodigo[nombre_atributo], valor_esperado):
+			return representations
+	
+	representations[0].weight = int(grosor_asignar)
+	return representations
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_menor_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_menor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_diccionario_atributos_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene el valor valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_diccionario_atributos_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor o igual que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_mayor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_diccionario_atributos_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor que valor_esperado'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if compara_valor_mayor_texto(geometry.attributes[nombre_atributo], valor_esperado):
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_diccionario_atributos_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if geometry.attributes[nombre_atributo] is None:
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_grosor_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor que no es nulo'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	if nombre_atributo not in geometry.attributes:
+		return representations
+
+	if geometry.attributes[nombre_atributo] is not None:
+		representations[0].weight = int(grosor_asignar)
+
+	return representations
+
+@dynamic_representation_rule()
+def asignar_grosor_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, grosor_asignar):
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+		return representations
+
+	lista_atributos_y_valores = atributos_y_valores.split(' ')
+
+	for i in range(0, len(lista_atributos_y_valores), 2):
+		nombre_atributo = lista_atributos_y_valores[i]
+		valor_esperado = lista_atributos_y_valores[i + 1]
+
+		if nombre_atributo not in geometry.attributes:
+			return representations
+	
+		if compara_valor_distinto_texto(geometry.attributes[nombre_atributo], valor_esperado):
 			return representations
 	
 	representations[0].weight = int(grosor_asignar)
