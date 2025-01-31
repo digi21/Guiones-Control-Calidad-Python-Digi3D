@@ -1406,56 +1406,56 @@ def asignar_color_si_area_mayor_valor(geometry, code_drawing, representations, n
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es inferior que el valor area'
+def asignar_color_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es inferior que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(perimetro):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es inferior o igual que el valor area'
+def asignar_color_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es inferior o igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(perimetro):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es igual que el valor area'
+def asignar_color_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(perimetro):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es mayor o igual que el valor area'
+def asignar_color_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es mayor o igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(perimetro):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es mayor que el valor area'
+def asignar_color_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es mayor que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(perimetro):
 		representations[0].color = texto_a_color(color_asignar)
 
 	return representations
@@ -2192,60 +2192,60 @@ def asignar_color_relleno_si_area_mayor_valor(geometry, code_drawing, representa
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_relleno_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es inferior que el valor area'
+def asignar_color_relleno_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es inferior que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(perimetro):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_relleno_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es inferior o igual que el valor area'
+def asignar_color_relleno_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es inferior o igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(perimetro):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_relleno_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es igual que el valor area'
+def asignar_color_relleno_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(perimetro):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_relleno_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es mayor o igual que el valor area'
+def asignar_color_relleno_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es mayor o igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(perimetro):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_relleno_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es mayor que el valor area'
+def asignar_color_relleno_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
+	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es mayor que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(perimetro):
 		representations[0].fill_type = FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
@@ -2961,56 +2961,56 @@ def asignar_grosor_si_area_mayor_valor(geometry, code_drawing, representations, 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_grosor_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, area, grosor_asignar):
-	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es inferior que el valor area'
+def asignar_grosor_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
+	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es inferior que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(perimetro):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_grosor_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, grosor_asignar):
-	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es inferior o igual que el valor area'
+def asignar_grosor_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
+	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es inferior o igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(perimetro):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_grosor_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, grosor_asignar):
-	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es igual que el valor area'
+def asignar_grosor_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
+	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(perimetro):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_grosor_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, grosor_asignar):
-	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es mayor o igual que el valor area'
+def asignar_grosor_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
+	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es mayor o igual que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(perimetro):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
 
 @dynamic_representation_rule()
-def asignar_grosor_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, area, grosor_asignar):
-	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es mayor que el valor area'
+def asignar_grosor_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
+	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es mayor que el valor perimetro'
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(area):
+	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(perimetro):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
