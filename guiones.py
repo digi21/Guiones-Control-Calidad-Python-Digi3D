@@ -1,6 +1,5 @@
 import digi3d
 import digi3d.relations
-from digi3d import FillType
 import random
 
 # Utilidades --------------------------------------------------------------------------
@@ -1811,7 +1810,7 @@ def asignar_color_relleno(geometry, code_drawing, representations, nombre_codigo
 	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
 		return representations
 
-	representations[0].fill_type = FillType.Color
+	representations[0].fill_type = digi3d.FillType.Color
 	representations[0].fill_color = texto_a_color(color_asignar)
 	return representations
 
@@ -1827,7 +1826,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, r
 		return representations
 
 	if compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1844,7 +1843,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, r
 		return representations
 
 	if compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1861,7 +1860,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_o_igual_valor(geometry, code_dr
 		return representations
 
 	if compara_valor_menor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1878,7 +1877,7 @@ def asignar_color_relleno_si_atributo_bbdd_igual_valor(geometry, code_drawing, r
 		return representations
 
 	if compara_valor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1895,7 +1894,7 @@ def asignar_color_relleno_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing,
 		return representations
 
 	if compara_valor_mayor_igual_texto(atributosCodigo[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1912,7 +1911,7 @@ def asignar_color_relleno_si_atributo_bbdd_mayor_valor(geometry, code_drawing, r
 		return representations
 
 	if compara_valor_mayor_texto(atributosCodigo[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1929,7 +1928,7 @@ def asignar_color_relleno_si_atributo_bbdd_es_nulo(geometry, code_drawing, repre
 		return representations
 
 	if atributosCodigo[nombre_atributo] is None:
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1946,7 +1945,7 @@ def asignar_color_relleno_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, re
 		return representations
 
 	if atributosCodigo[nombre_atributo] is not None:
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1970,7 +1969,7 @@ def asignar_color_relleno_si_multiples_atributos_bbdd_igual_valores(geometry, co
 		if compara_valor_distinto_texto(atributosCodigo[nombre_atributo], valor_esperado):
 			return representations
 	
-	representations[0].fill_type = FillType.Color
+	representations[0].fill_type = digi3d.FillType.Color
 	representations[0].fill_color = texto_a_color(color_asignar)
 	return representations
 
@@ -1984,7 +1983,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry
 		return representations
 
 	if compara_valor_menor_texto(geometry.attributes[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -1999,7 +1998,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry
 		return representations
 
 	if compara_valor_menor_texto(geometry.attributes[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2014,7 +2013,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_menor_o_igual_valor(
 		return representations
 
 	if compara_valor_menor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2029,7 +2028,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_igual_valor(geometry
 		return representations
 
 	if compara_valor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2044,7 +2043,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_o_igual(geomet
 		return representations
 
 	if compara_valor_mayor_igual_texto(geometry.attributes[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2059,7 +2058,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_valor(geometry
 		return representations
 
 	if compara_valor_mayor_texto(geometry.attributes[nombre_atributo], valor_esperado):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2074,7 +2073,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_es_nulo(geometry, co
 		return representations
 
 	if geometry.attributes[nombre_atributo] is None:
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2089,7 +2088,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_no_es_nulo(geometry,
 		return representations
 
 	if geometry.attributes[nombre_atributo] is not None:
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2112,7 +2111,7 @@ def asignar_color_relleno_si_multiples_atributos_diccionario_atributos_igual_val
 		if compara_valor_distinto_texto(geometry.attributes[nombre_atributo], valor_esperado):
 			return representations
 	
-	representations[0].fill_type = FillType.Color
+	representations[0].fill_type = digi3d.FillType.Color
 	representations[0].fill_color = texto_a_color(color_asignar)
 	return representations
 
@@ -2126,7 +2125,7 @@ def asignar_color_relleno_si_area_inferior_valor(geometry, code_drawing, represe
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < float(area):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2141,7 +2140,7 @@ def asignar_color_relleno_si_area_inferior_o_igual_valor(geometry, code_drawing,
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) <= float(area):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2156,7 +2155,7 @@ def asignar_color_relleno_si_area_igual_valor(geometry, code_drawing, representa
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) == float(area):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2171,7 +2170,7 @@ def asignar_color_relleno_si_area_mayor_igual_valor(geometry, code_drawing, repr
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) >= float(area):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2186,7 +2185,7 @@ def asignar_color_relleno_si_area_mayor_valor(geometry, code_drawing, representa
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) > float(area):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2198,7 +2197,7 @@ def asignar_color_relleno_si_perimetro_inferior_valor(geometry, code_drawing, re
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(perimetro):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2210,7 +2209,7 @@ def asignar_color_relleno_si_perimetro_inferior_o_igual_valor(geometry, code_dra
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(perimetro):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2222,7 +2221,7 @@ def asignar_color_relleno_si_perimetro_igual_valor(geometry, code_drawing, repre
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(perimetro):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2234,7 +2233,7 @@ def asignar_color_relleno_si_perimetro_mayor_o_igual_valor(geometry, code_drawin
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(perimetro):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2246,7 +2245,7 @@ def asignar_color_relleno_si_perimetro_mayor_valor(geometry, code_drawing, repre
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(perimetro):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2258,7 +2257,7 @@ def asignar_color_relleno_si_z_minima_inferior_valor(geometry, code_drawing, rep
 		return representations
 
 	if geometry.min[2] < float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2270,7 +2269,7 @@ def asignar_color_relleno_si_z_minima_inferior_o_igual_valor(geometry, code_draw
 		return representations
 
 	if geometry.min[2] <= float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2282,7 +2281,7 @@ def asignar_color_relleno_si_z_minima_igual_valor(geometry, code_drawing, repres
 		return representations
 
 	if geometry.min[2] < float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2294,7 +2293,7 @@ def asignar_color_relleno_si_z_minima_mayor_o_igual_valor(geometry, code_drawing
 		return representations
 
 	if geometry.min[2] >= float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2306,7 +2305,7 @@ def asignar_color_relleno_si_z_minima_mayor_valor(geometry, code_drawing, repres
 		return representations
 
 	if geometry.min[2] > float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2318,7 +2317,7 @@ def asignar_color_relleno_si_z_maxima_inferior_valor(geometry, code_drawing, rep
 		return representations
 
 	if geometry.max[2] < float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2330,7 +2329,7 @@ def asignar_color_relleno_si_z_maxima_inferior_o_igual_valor(geometry, code_draw
 		return representations
 
 	if geometry.max[2] <= float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2342,7 +2341,7 @@ def asignar_color_relleno_si_z_maxima_igual_valor(geometry, code_drawing, repres
 		return representations
 
 	if geometry.max[2] == float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2354,7 +2353,7 @@ def asignar_color_relleno_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing
 		return representations
 
 	if geometry.max[2] >= float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2366,7 +2365,7 @@ def asignar_color_relleno_si_z_maxima_mayor_valor(geometry, code_drawing, repres
 		return representations
 
 	if geometry.max[2] > float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2379,7 +2378,7 @@ def asignar_color_relleno_si_altura_menor_valor(geometry, code_drawing, represen
 		return representations
 
 	if geometry.max[2] - geometry.min[2] < float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2391,7 +2390,7 @@ def asignar_color_relleno_si_altura_menor_o_igual_valor(geometry, code_drawing, 
 		return representations
 
 	if geometry.max[2] - geometry.min[2] <= float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2403,7 +2402,7 @@ def asignar_color_relleno_si_altura_igual_valor(geometry, code_drawing, represen
 		return representations
 
 	if geometry.max[2] - geometry.min[2] == float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2415,7 +2414,7 @@ def asignar_color_relleno_si_altura_mayor_o_igual_valor(geometry, code_drawing, 
 		return representations
 
 	if geometry.max[2] - geometry.min[2] >= float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2427,7 +2426,7 @@ def asignar_color_relleno_si_altura_mayor_valor(geometry, code_drawing, represen
 		return representations
 
 	if geometry.max[2] - geometry.min[2] > float(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2442,7 +2441,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_menor_valor(geometry, 
 		return representations
 
 	if len(geometry.holes) < int(valor):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2457,7 +2456,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_menor_o_igual_valor(ge
 		return representations
 
 	if len(geometry.holes) <= int(numero_huecos):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2472,7 +2471,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_igual_valor(geometry, 
 		return representations
 
 	if len(geometry.holes) == int(numero_huecos):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2487,7 +2486,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_mayor_o_igual_valor(ge
 		return representations
 
 	if len(geometry.holes) >= int(numero_huecos):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2502,7 +2501,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_mayor_valor(geometry, 
 		return representations
 
 	if len(geometry.holes) > int(numero_huecos):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2514,7 +2513,7 @@ def asignar_color_relleno_si_numero_vertices_menor_valor(geometry, code_drawing,
 		return representations
 
 	if len(geometry) < int(numero_vertices):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2526,7 +2525,7 @@ def asignar_color_relleno_si_numero_vertices_menor_o_igual_valor(geometry, code_
 		return representations
 
 	if len(geometry) <= int(numero_vertices):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2538,7 +2537,7 @@ def asignar_color_relleno_si_numero_vertices_igual_valor(geometry, code_drawing,
 		return representations
 
 	if len(geometry) == int(numero_vertices):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2550,7 +2549,7 @@ def asignar_color_relleno_si_numero_vertices_mayor_o_igual_valor(geometry, code_
 		return representations
 
 	if len(geometry) >= int(numero_vertices):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2562,7 +2561,7 @@ def asignar_color_relleno_si_numero_vertices_mayor_valor(geometry, code_drawing,
 		return representations
 
 	if len(geometry) > int(numero_vertices):
-		representations[0].fill_type = FillType.Color
+		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
 	return representations
@@ -2591,7 +2590,7 @@ def asignar_color_relleno_aleatorio_segun_valor_atributo_bbdd(geometry, code_dra
 		color = "#" + f"{r:02x}" + f"{g:02x}" + f"{b:02x}" + "ff"
 		colores_relleno_atributo_bbdd[valorAtributo] = color
 
-	representations[0].fill_type = FillType.Color
+	representations[0].fill_type = digi3d.FillType.Color
 	representations[0].fill_color = colores_relleno_atributo_bbdd[valorAtributo]
 
 	return representations
@@ -2618,7 +2617,7 @@ def asignar_color_relleno_aleatorio_segun_valor_atributo_diccionario_atributos(g
 		color = "#" + f"{r:02x}" + f"{g:02x}" + f"{b:02x}" + "ff"
 		colores_relleno_atributo[valorAtributo] = color
 
-	representations[0].fill_type = FillType.Color
+	representations[0].fill_type = digi3d.FillType.Color
 	representations[0].fill_color = colores_relleno_atributo[valorAtributo]
 
 	return representations
