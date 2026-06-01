@@ -1,5 +1,4 @@
 import digi3d
-import digi3d.relations
 import random
 
 # Utilidades --------------------------------------------------------------------------
@@ -294,7 +293,7 @@ def si_es_area_debe_ser_adyacente_area(geometry, adding_geometry, code_index, c�
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.adjacent(área, geometry)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: área.adjacent(geometry)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -303,7 +302,7 @@ def si_es_area_debe_estar_completamente_dentro_de_area(geometry, adding_geometry
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.completely_within(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.completely_within(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -312,7 +311,7 @@ def si_es_area_debe_estar_dentro_de_area(geometry, adding_geometry, code_index, 
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.within(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.within(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -321,7 +320,7 @@ def si_es_area_debe_ser_estar_separado_de_area(geometry, adding_geometry, code_i
     if not es_area(geometry):
         return
 
-    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not digi3d.relations.AreaArea.disjoint(área, geometry)):
+    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not área.disjoint(geometry)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -330,7 +329,7 @@ def si_es_area_debe_ser_igual_a_otra_area(geometry, adding_geometry, code_index,
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.equal(área, geometry)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: área.equals(geometry)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -339,7 +338,7 @@ def si_es_area_debe_unirse_con_otra_area(geometry, adding_geometry, code_index, 
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.join(área, geometry)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: área.touches(geometry)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -348,7 +347,7 @@ def si_es_area_debe_solapar_otra_area(geometry, adding_geometry, code_index, có
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.overlap(geometry, área)[0]):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.overlaps(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -357,7 +356,7 @@ def si_es_area_no_puede_solapar_otra_area(geometry, adding_geometry, code_index,
     if not es_area(geometry):
         return
 
-    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.AreaArea.overlap(geometry, área)[0]):
+    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.overlaps(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -418,7 +417,7 @@ def si_es_linea_debe_ser_adyacente_a_area(geometry, adding_geometry, code_index,
     if type(geometry) is not digi3d.Line:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.LineArea.adjacent(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.adjacent(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -427,7 +426,7 @@ def si_es_linea_debe_estar_completamente_dentro_de_area(geometry, adding_geometr
     if type(geometry) is not digi3d.Line:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.LineArea.within(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.within(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -436,7 +435,7 @@ def si_es_linea_debe_cruzar_area(geometry, adding_geometry, code_index, código_
     if type(geometry) is not digi3d.Line:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.LineArea.across(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.crosses(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -445,7 +444,7 @@ def si_es_linea_debe_cruzar_linea(geometry, adding_geometry, code_index, código
     if type(geometry) is not digi3d.Line:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.across(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.crosses(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -454,7 +453,7 @@ def si_es_linea_debe_estar_separado_de_area(geometry, adding_geometry, code_inde
     if type(geometry) is not digi3d.Line:
         return
 
-    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not digi3d.relations.LineArea.disjoint(geometry, área)):
+    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not geometry.disjoint(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -463,7 +462,7 @@ def si_es_linea_debe_estar_separado_de_linea(geometry, adding_geometry, code_ind
     if type(geometry) is not digi3d.Line:
         return
 
-    if alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: not digi3d.relations.LineLine.disjoint(geometry, línea)):
+    if alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: not geometry.disjoint(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -472,7 +471,7 @@ def si_es_linea_debe_ser_igual_a_linea(geometry, adding_geometry, code_index, c�
     if type(geometry) is not digi3d.Line:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.equal(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.equals(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -481,7 +480,7 @@ def si_es_linea_debe_unirse_con_area(geometry, adding_geometry, code_index, cód
     if type(geometry) is not digi3d.Line:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.LineArea.join(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.touches(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -490,7 +489,7 @@ def si_es_linea_debe_unirse_con_linea(geometry, adding_geometry, code_index, có
     if type(geometry) is not digi3d.Line:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.join(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.touches(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -499,7 +498,7 @@ def si_es_linea_debe_solapar_linea(geometry, adding_geometry, code_index, códig
     if type(geometry) is not digi3d.Line:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.overlap(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.overlaps(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -508,7 +507,7 @@ def si_es_linea_debe_terminar_dentro_de_area(geometry, adding_geometry, code_ind
     if type(geometry) is not digi3d.Line:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.LineArea.terminates_within(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.terminates_within(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -517,7 +516,7 @@ def si_es_linea_debe_terminar_en_borde_area(geometry, adding_geometry, code_inde
     if type(geometry) is not digi3d.Line:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.LineArea.endpoint_join(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.endpoint_touches(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -526,7 +525,7 @@ def si_es_linea_debe_terminar_en_extremo_de_linea(geometry, adding_geometry, cod
     if type(geometry) is not digi3d.Line:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.endpoint_join_endpoint(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.endpoint_touches(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -535,7 +534,7 @@ def si_es_linea_debe_terminar_en_linea(geometry, adding_geometry, code_index, c�
     if type(geometry) is not digi3d.Line:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.endpoint_join_excluding_endpoints(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.endpoint_touches_interior(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -544,7 +543,7 @@ def si_es_punto_debe_coincidir_con_area(geometry, adding_geometry, code_index, c
     if type(geometry) is not digi3d.Point:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.PointArea.coincident(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.coincident(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -553,7 +552,7 @@ def si_es_punto_debe_coincidir_con_extremo_linea(geometry, adding_geometry, code
     if type(geometry) is not digi3d.Point:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.PointLine.coincident_and_terminate(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.coincident_and_terminates(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -562,7 +561,7 @@ def si_es_punto_debe_coincidir_con_linea(geometry, adding_geometry, code_index, 
     if type(geometry) is not digi3d.Point:
         return
 
-    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.PointLine.coincident(geometry, línea)):
+    if not alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.coincident(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -571,7 +570,7 @@ def si_es_punto_debe_coincidir_con_punto(geometry, adding_geometry, code_index, 
     if type(geometry) is not digi3d.Point:
         return
 
-    if not algun_punto_con_codigo(geometry, código_o_etiqueta_puntos_analizar, lambda punto: digi3d.relations.PointPoint.coincident(geometry, punto)):
+    if not algun_punto_con_codigo(geometry, código_o_etiqueta_puntos_analizar, lambda punto: geometry.coincident(punto)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -580,7 +579,7 @@ def si_es_punto_debe_estar_separado_de_area(geometry, adding_geometry, code_inde
     if type(geometry) is not digi3d.Point:
         return
 
-    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not digi3d.relations.PointArea.disjoint(geometry, área)):
+    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not geometry.disjoint(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -589,7 +588,7 @@ def si_es_punto_debe_estar_separado_de_linea(geometry, adding_geometry, code_ind
     if type(geometry) is not digi3d.Point:
         return
 
-    if alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: not digi3d.relations.PointLine.disjoint(geometry, línea)):
+    if alguna_linea_con_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: not geometry.disjoint(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -598,7 +597,7 @@ def si_es_punto_debe_estar_separado_de_punto(geometry, adding_geometry, code_ind
     if type(geometry) is not digi3d.Point:
         return
 
-    if algun_punto_con_codigo(geometry, código_o_etiqueta_puntos_analizar, lambda punto: not digi3d.relations.PointPoint.disjoint(geometry, punto)):
+    if algun_punto_con_codigo(geometry, código_o_etiqueta_puntos_analizar, lambda punto: not geometry.disjoint(punto)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -607,7 +606,7 @@ def si_es_punto_debe_estar_en_el_interior_de_area(geometry, adding_geometry, cod
     if type(geometry) is not digi3d.Point:
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: digi3d.relations.PointArea.within(geometry, área)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.within(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -933,7 +932,7 @@ def si_es_linea_no_puede_cruzar_linea(geometry, adding_geometry, code_index, có
         if candidato == geometry:
             continue
 
-        vertices_de_cruce = digi3d.relations.LineLine.get_cross_vertices(geometry, candidato, adding_geometry)
+        vertices_de_cruce = geometry.cross_vertices(candidato, adding_geometry)
         if len(vertices_de_cruce) == 0:
             continue
         
@@ -983,7 +982,7 @@ def si_es_linea_solo_puede_continuar_con_lineas_con_codigo(geometry, adding_geom
     if type(geometry) is not digi3d.Line:
         return
 
-    if alguna_linea_sin_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: digi3d.relations.LineLine.endpoint_join_endpoint(geometry, línea)):
+    if alguna_linea_sin_codigo(geometry, código_o_etiqueta_lineas_analizar, lambda línea: geometry.endpoint_touches(línea)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
