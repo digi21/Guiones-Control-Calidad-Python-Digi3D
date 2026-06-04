@@ -3,7 +3,7 @@
 Bienvenido al repositorio **comunitario** de controles de calidad para [Digi3D.NET](https://www.digi21.net).
 
 Aquí encontrarás guiones de Python que puedes pegar en la pestaña **Python** del programa
-[Editor de Tablas de Códigos](https://ayuda.digi21.net/digi3d-net/referencia/editor-de-tablas-de-codigos)
+[Editor de Tablas de Códigos](https://www.digi21.net/Ayuda/digi3d-net/referencia/editor-de-tablas-de-codigos)
 y luego asignar en el campo **Controles de calidad a aplicar** de cada código. Así puedes validar tus
 geometrías (durante la digitalización o a petición) de forma muy sencilla, sin tener que programar nada
 si ya existe el control que necesitas.
