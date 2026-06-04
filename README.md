@@ -1,9 +1,9 @@
-# Guiones de control de calidad en Digi3D.NET
+# Guiones de control de calidad en Digi3D.AI
 
-Bienvenido al repositorio **comunitario** de controles de calidad para [Digi3D.NET](https://www.digi21.net).
+Bienvenido al repositorio **comunitario** de controles de calidad para [Digi3D.AI](https://www.digi21.net).
 
 Aquí encontrarás guiones de Python que puedes pegar en la pestaña **Python** del programa
-[Editor de Tablas de Códigos](https://www.digi21.net/Ayuda/digi3d-net/referencia/editor-de-tablas-de-codigos)
+[Editor de Tablas de Códigos](https://www.digi21.net/Ayuda/digi3d-ai/referencia/editor-de-tablas-de-codigos)
 y luego asignar en el campo **Controles de calidad a aplicar** de cada código. Así puedes validar tus
 geometrías (durante la digitalización o a petición) de forma muy sencilla, sin tener que programar nada
 si ya existe el control que necesitas.
@@ -25,7 +25,7 @@ A continuación tienes la **referencia completa** para escribir tus propios cont
 
 ## Declaración de un control de calidad
 
-El _Editor de Tablas de Códigos_ de _Digi3D.NET_ y el propio _Digi3D.NET_ localizan las funciones que realizan controles de calidad enumerando todas las que estén definidas en el entorno _Python_ que cumplan con las siguientes condiciones:
+El _Editor de Tablas de Códigos_ de _Digi3D.AI_ y el propio _Digi3D.AI_ localizan las funciones que realizan controles de calidad enumerando todas las que estén definidas en el entorno _Python_ que cumplan con las siguientes condiciones:
 
 1. Que están decoradas o envueltas con el _function\_wrapper_ denominado __@quality_control__ 
 2. Que reciban al menos los parámetros `geometry`, `adding_geometry` y `code_index`.
@@ -52,7 +52,7 @@ La función puede recibir sus propios parámetros, como códigos, distancias, et
 El _Editor de Tablas de códigos_ extrae la descripción que va a mostrar en la columna _Descripción_ del cuadro de diálogo que aparece al pulsar sobre el botón de _Controles de calidad_ de cada código de la primera línea de documentación de la función de control de calidad. 
 Es obligatorio que las funciones de control de calidad tengan al menos una línea de documentación.
 
-### Comunicando a Digi3D.NET que la geometría ha pasado el control de calidad sin problemas
+### Comunicando a Digi3D.AI que la geometría ha pasado el control de calidad sin problemas
 
 Si la geometría analizada no presenta problemas para un control de calidad en particular, tan solo hay que salir de la función con un `return`
 
@@ -61,13 +61,13 @@ Ejemplo de una función de control de calidad que no hace nada, pero que aparece
 ```python
 @quality_control()
 def este_control_de_calidad_no_hace_nada(geometry, adding_geometry, code_index):
-    'Este control de calidad nunca devuelve un error a Digi3D.NET.'
+    'Este control de calidad nunca devuelve un error a Digi3D.AI.'
     return
 ```
 
 ## Comunicación de advertencias y errores
 
-Si la función de control de calidad determina que la geometría que se está analizando tiene errores, puede comunicárselo a Digi3D.NET devolviendo cualquiera de los siguientes objetos:
+Si la función de control de calidad determina que la geometría que se está analizando tiene errores, puede comunicárselo a Digi3D.AI devolviendo cualquiera de los siguientes objetos:
 
 - `digi3d.GeometryWarning`
 - `digi3d.GeometryError`
@@ -86,7 +86,7 @@ def control_calidad_a_anadir_a_codigos_con_los_que_no_se_deberia_dibujar_nada(ge
 
     return errores
 ```
-### Comunicando a Digi3D.NET advertencias
+### Comunicando a Digi3D.AI advertencias
 
 Si la función de control de calidad quiere informar de una advertencia (aparecerá con el icono de advertencia en el panel de tareas en vez de con el icono de error), tiene que devolver una instancia de `digi3d.GeometryWarning`.
 
@@ -106,7 +106,7 @@ def muestra_advertencia_si_la_linea_tiene_menos_de_X_vertices(geometry, adding_g
 ```
 
 
-### Comunicando a Digi3D.NET que la geometría tiene un error por sí misma (sin tener en cuenta otras geometrías del archivo de dibujo)
+### Comunicando a Digi3D.AI que la geometría tiene un error por sí misma (sin tener en cuenta otras geometrías del archivo de dibujo)
 
 En este caso la función de control de calidad tiene que devolver una instancia del objeto `digi3d.GeometryError`.
 
@@ -116,14 +116,14 @@ Este objeto tiene dos constructores posibles:
 |--|--|
 |Mensaje|Mensaje a comunicar al usuario|
 
-Si se devuelve este objeto, Digi3D.NET hará un zoom extendido a la geometría si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
+Si se devuelve este objeto, Digi3D.AI hará un zoom extendido a la geometría si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
 
 |Parámetro|Descripción|
 |--|--|
 |Mensaje|Mensaje a comunicar al usuario|
 |Coordenadas|Tupla con coordenadas (x,y,z)|
 
-Si se devuelve este objeto, Digi3D.NET desplazará la cámara a las coordenadas especificadas si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
+Si se devuelve este objeto, Digi3D.AI desplazará la cámara a las coordenadas especificadas si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
 
 Veamos un ejemplo muy sencillo de control de calidad que devuelve `digi3d.GeometryError`:
 
@@ -135,7 +135,7 @@ def debe_ser_punto(geometry, adding_geometry, code_index):
 	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Punto'.format(geometry.codes[0].code))
 ```
 
-### Comunicando a Digi3D.NET que la geometría tiene un error en relación con otra geometría
+### Comunicando a Digi3D.AI que la geometría tiene un error en relación con otra geometría
 
 Si queremos relacionar dos geometrías en el error, como por ejemplo en el caso de que una geometría esté muy cerca de otra por ejemplo, tenemos que devolver una instancia del objeto `digi3d.GeometryRelationError`. 
 
@@ -148,7 +148,7 @@ Este objeto dispone de cuatro constructores:
 |Otra|La otra geometría involucrada en el problema detectado por el control de calidad|
 |Mensaje|Mensaje a comunicar al usuario|
 
-Si se devuelve este objeto, Digi3D.NET hará un zoom extendido a la geometría si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
+Si se devuelve este objeto, Digi3D.AI hará un zoom extendido a la geometría si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
 
 |Parámetro|Descripción|
 |--|--|
@@ -156,14 +156,14 @@ Si se devuelve este objeto, Digi3D.NET hará un zoom extendido a la geometría s
 |Mensaje|Mensaje a comunicar al usuario|
 |Coordenadas|Tupla con coordenadas (x,y,z)|
 
-Si se devuelve este objeto, Digi3D.NET desplazará la cámara a las coordenadas especificadas si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
+Si se devuelve este objeto, Digi3D.AI desplazará la cámara a las coordenadas especificadas si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
 
 |Parámetro|Descripción|
 |--|--|
 |Otras|Lista de geometrías que están involucradas en el problema detectado por el control de calidad|
 |Mensaje|Mensaje a comunicar al usuario|
 
-Si se devuelve este objeto, Digi3D.NET hará un zoom extendido a la geometría si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
+Si se devuelve este objeto, Digi3D.AI hará un zoom extendido a la geometría si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
 
 |Parámetro|Descripción|
 |--|--|
@@ -171,7 +171,7 @@ Si se devuelve este objeto, Digi3D.NET hará un zoom extendido a la geometría s
 |Mensaje|Mensaje a comunicar al usuario|
 |Coordenadas|Tupla con coordenadas (x,y,z)|
 
-Si se devuelve este objeto, Digi3D.NET desplazará la cámara a las coordenadas especificadas si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
+Si se devuelve este objeto, Digi3D.AI desplazará la cámara a las coordenadas especificadas si el usuario hace doble click en la tarea con el error que aparecerá en el panel de tareas.
 
 Ejemplo:
 
@@ -229,11 +229,11 @@ def no_puede_punto_estar_a_menos_de_distancia_de_cualquier_otro_punto(geometry, 
         return digi3d.GeometryRelationError(lista_de_puntos_cercanos, 'Este punto está muy cerca de estos puntos')
 ```
 
-### Comunicando a Digi3D.NET que la geometría tiene un error de base de datos
+### Comunicando a Digi3D.AI que la geometría tiene un error de base de datos
 
-Si el control de calidad analiza los atributos de base de datos de un determinado código y encuentra un error, puede comunicárselo a Digi3D.NET devolviendo una instancia de `digi3d.DatabaseFieldError`.
+Si el control de calidad analiza los atributos de base de datos de un determinado código y encuentra un error, puede comunicárselo a Digi3D.AI devolviendo una instancia de `digi3d.DatabaseFieldError`.
 
-Si estamos en modo interactivo, Digi3D.NET mostrará un cuadro de diálogo para que el usuario corrija el error de base de datos y vuelva a probar a almacenar la geometría.
+Si estamos en modo interactivo, Digi3D.AI mostrará un cuadro de diálogo para que el usuario corrija el error de base de datos y vuelva a probar a almacenar la geometría.
 
 El constructor de este objeto recibe los siguientes parámetros:
 
