@@ -12,7 +12,7 @@ def texto_a_color(texto):
 
 			if tamanoTexto == 9:
 				return texto
-			if tamanotexto == 7:
+			if tamanoTexto == 7:
 				return texto + 'ff'
 			return texto.ljust(7, '0') + 'ff'
 		return texto
@@ -28,7 +28,7 @@ def texto_a_color(texto):
 def localiza_codigo_en_geometria(geometria, codigo_buscado):
 	'Localiza un código por su nombre en una geometría y lo devuelve o devuelve None si no se localiza'
 	for codigoGeometria in geometria.codes:
-		if compara_codigos_con_comodines(codigoGeometria.name, codigo_buscado):
+		if compara_codigos_con_comodines(codigoGeometria.code, codigo_buscado):
 			return codigoGeometria
 	return None
 
@@ -97,7 +97,7 @@ def tiene_el_codigo(g, nombre_código):
         código: Código buscado.
     '''
     for codigo in g.codes:
-        if codigo.name == nombre_código:
+        if codigo.code == nombre_código:
             return True
     return False
 
@@ -108,7 +108,7 @@ def tiene_el_codigo_con_comodines(g, nombre_código):
         código: Código buscado.
     '''
     for codigo in g.codes:
-        if compara_codigos_con_comodines(codigo.name, nombre_código) :
+        if compara_codigos_con_comodines(codigo.code, nombre_código) :
             return True
     return False
 
@@ -150,7 +150,7 @@ def tiene_algun_codigo(g, códigos):
         Esta función devuelve verdadero si se encuentra al menos un código de los pasados por parámetros
         de entre los códigos que tiene la entidad.
     '''
-    return len(códigos.intersection(g.codes.keys())) > 0
+    return len(códigos.intersection({c.code for c in g.codes})) > 0
 
 def tiene_algun_codigo_con_comodines(g, códigos_con_comodines):
     '''Indica si la entidad tiene alguno de los códigos pasados por parámetro.
@@ -163,7 +163,7 @@ def tiene_algun_codigo_con_comodines(g, códigos_con_comodines):
     '''
     for codigo in g.codes:
         for codigoComparar in códigos_con_comodines:
-            if compara_codigos_con_comodines(codigo, codigoComparar):
+            if compara_codigos_con_comodines(codigo.code, codigoComparar):
                 return True
 
     return False
@@ -384,7 +384,7 @@ def atributo_bbdd_no_puede_ser_nulo(geometry, adding_geometry, code_index, nombr
     atributosCodigo = geometry.codes[code_index].attributes
 
     if nombre_atributo not in atributosCodigo:
-        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].name, nombre_atributo))
+        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].code, nombre_atributo))
 
     if atributosCodigo[nombre_atributo] is None:
         return digi3d.DatabaseFieldError('Atributo con valor nulo', code_index, nombre_atributo)
@@ -395,7 +395,7 @@ def atributo_bbdd_debe_ser_igual(geometry, adding_geometry, code_index, nombre_a
     atributosCodigo = geometry.codes[code_index].attributes
 
     if nombre_atributo not in atributosCodigo:
-        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].name, nombre_atributo))
+        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].code, nombre_atributo))
 
     if atributosCodigo[nombre_atributo] is None or compara_valor_distinto_texto(atributosCodigo[nombre_atributo], valor_esperado):
         return digi3d.DatabaseFieldError(mensaje, code_index, nombre_atributo)
@@ -406,7 +406,7 @@ def atributo_bbdd_debe_ser_mayor_o_igual(geometry, adding_geometry, code_index, 
     atributosCodigo = geometry.codes[code_index].attributes
 
     if nombre_atributo not in atributosCodigo:
-        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].name, nombre_atributo))
+        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].code, nombre_atributo))
 
     if atributosCodigo[nombre_atributo] is None or compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor):
         return digi3d.GeometryError(mensaje)
@@ -613,37 +613,37 @@ def si_es_punto_debe_estar_en_el_interior_de_area(geometry, adding_geometry, cod
 def debe_ser_area(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo área (polígonos o líneas cerradas)'
     if not es_area(geometry):
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser polígonos o líneas cerradas'.format(geometry.codes[0].name))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser polígonos o líneas cerradas'.format(geometry.codes[0].code))
 
 @quality_control()
 def debe_ser_complejo(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo Complejo'
     if type(geometry) is not digi3d.Complex:
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Texto'.format(geometry.codes[0].name))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Texto'.format(geometry.codes[0].code))
 
 @quality_control()
 def debe_ser_linea(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo Línea'
     if type(geometry) is not digi3d.Line:
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Línea'.format(geometry.codes[0].name))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Línea'.format(geometry.codes[0].code))
 
 @quality_control()
 def debe_ser_poligono(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo Polígono'
     if type(geometry) is not digi3d.Polygon:
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Polígono'.format(geometry.codes[0].name))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Polígono'.format(geometry.codes[0].code))
 
 @quality_control()
 def debe_ser_punto(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo Punto'
     if type(geometry) is not digi3d.Point:
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Punto'.format(geometry.codes[0].name))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Punto'.format(geometry.codes[0].code))
 
 @quality_control()
 def debe_ser_texto(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo Texto'
     if type(geometry) is not digi3d.Text:
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Texto'.format(geometry.codes[0].name))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Texto'.format(geometry.codes[0].code))
 
 @quality_control()
 def debe_tener_area_igual_o_mayor(geometry, adding_geometry, code_index, area_minima):
@@ -656,7 +656,7 @@ def debe_tener_area_igual_o_mayor(geometry, adding_geometry, code_index, area_mi
     calculado con las coordenadas en grados. Para solucionar este problema, utilizamos la calculadora geográfica de la ventana de 
     dibujo que sabe en qué sistema de coordenadas, está y en caso de ser geográfico, calcula el área en metros cuadrados'''
     if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < area_minima:
-        return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un área mayor o igual que {}'.format(geometry.codes[0].name, area_minima))
+        return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un área mayor o igual que {}'.format(geometry.codes[0].code, area_minima))
 
 @quality_control()
 def debe_tener_perimetro_mayor_o_igual(geometry, adding_geometry, code_index, perimetro):
@@ -667,7 +667,7 @@ def debe_tener_perimetro_mayor_o_igual(geometry, adding_geometry, code_index, pe
     dibujo que sabe en qué sistema de coordenadas está, y en caso de ser geográfico, calcula el área en metros cuadrados'''
     if digi3d.current_view().geographic_calculator.perimeter_2d(geometry) >= perimetro:
         return
-    return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un perímetro mayor o igual que {}'.format(geometry.codes[0].name, perimetro))
+    return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un perímetro mayor o igual que {}'.format(geometry.codes[0].code, perimetro))
 
 @quality_control()
 def debe_tener_perimetro_mayor(geometry, adding_geometry, code_index, perimetro):
@@ -678,7 +678,7 @@ def debe_tener_perimetro_mayor(geometry, adding_geometry, code_index, perimetro)
     dibujo que sabe en qué sistema de coordenadas está, y en caso de ser geográfico, calcula el área en metros cuadrados'''
     if digi3d.current_view().geographic_calculator.perimeter_2d(geometry) > perimetro:
         return
-    return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un perímetro mayor que {}'.format(geometry.codes[0].name, perimetro))
+    return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un perímetro mayor que {}'.format(geometry.codes[0].code, perimetro))
 
 @quality_control()
 def debe_tener_todos_los_vertices_con_la_misma_coordenada_z(geometry, adding_geometry, code_index):
@@ -1030,7 +1030,8 @@ def la_coordenada_z_del_primer_vertice_debe_ser_el_de_una_curva_fina(geometry, a
 @quality_control()
 def debe_tener_ancho_y_alto_mayor_o_igual_valor_o_linea(geometry, adding_geometry, code_index, ancho, alto):
     'Comunica un error si el ancho y el largo no son mayores que los parámetros'
-    ancho_geometria, alto_geometria, _ = geometry.max - geometry.min
+    ancho_geometria = geometry.max[0] - geometry.min[0]
+    alto_geometria = geometry.max[1] - geometry.min[1]
 
     if min(ancho_geometria, alto_geometria) >= ancho and max(ancho_geometria, alto_geometria) >= alto:
         return
@@ -1074,7 +1075,7 @@ def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_interior
 @dynamic_representation_rule()
 def asignar_color(geometry, code_drawing, representations, nombre_codigo, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo (admite comodines)'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	representations[0].color = texto_a_color(color_asignar)
@@ -1083,7 +1084,7 @@ def asignar_color(geometry, code_drawing, representations, nombre_codigo, color_
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1099,7 +1100,7 @@ def asignar_color_si_atributo_bbdd_menor_valor(geometry, code_drawing, represent
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que igual a valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1115,7 +1116,7 @@ def asignar_color_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, r
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene el valor valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1131,7 +1132,7 @@ def asignar_color_si_atributo_bbdd_igual_valor(geometry, code_drawing, represent
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor mayor o igual que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1147,7 +1148,7 @@ def asignar_color_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, represe
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor mayor que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1163,7 +1164,7 @@ def asignar_color_si_atributo_bbdd_mayor_valor(geometry, code_drawing, represent
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1179,7 +1180,7 @@ def asignar_color_si_atributo_bbdd_es_nulo(geometry, code_drawing, representatio
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo no tiene un valor nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1195,7 +1196,7 @@ def asignar_color_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representa
 @dynamic_representation_rule()
 def asignar_color_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1217,7 +1218,7 @@ def asignar_color_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawi
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1231,7 +1232,7 @@ def asignar_color_si_atributo_diccionario_atributos_menor_valor(geometry, code_d
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1245,7 +1246,7 @@ def asignar_color_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene el valor valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1259,7 +1260,7 @@ def asignar_color_si_atributo_diccionario_atributos_igual_valor(geometry, code_d
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor o igual que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1273,7 +1274,7 @@ def asignar_color_si_atributo_diccionario_atributos_mayor_o_igual(geometry, code
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1287,7 +1288,7 @@ def asignar_color_si_atributo_diccionario_atributos_mayor_valor(geometry, code_d
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1301,7 +1302,7 @@ def asignar_color_si_atributo_diccionario_atributos_es_nulo(geometry, code_drawi
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor que no sea nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1315,7 +1316,7 @@ def asignar_color_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_dr
 @dynamic_representation_rule()
 def asignar_color_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	lista_atributos_y_valores = atributos_y_valores.split(' ')
@@ -1339,7 +1340,7 @@ def asignar_color_si_area_inferior_valor(geometry, code_drawing, representations
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < float(area):
@@ -1353,7 +1354,7 @@ def asignar_color_si_area_inferior_o_igual_valor(geometry, code_drawing, represe
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) <= float(area):
@@ -1367,7 +1368,7 @@ def asignar_color_si_area_igual_valor(geometry, code_drawing, representations, n
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) == float(area):
@@ -1381,7 +1382,7 @@ def asignar_color_si_area_mayor_igual_valor(geometry, code_drawing, representati
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) >= float(area):
@@ -1395,7 +1396,7 @@ def asignar_color_si_area_mayor_valor(geometry, code_drawing, representations, n
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) > float(area):
@@ -1406,7 +1407,7 @@ def asignar_color_si_area_mayor_valor(geometry, code_drawing, representations, n
 @dynamic_representation_rule()
 def asignar_color_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es inferior que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(perimetro):
@@ -1417,7 +1418,7 @@ def asignar_color_si_perimetro_inferior_valor(geometry, code_drawing, representa
 @dynamic_representation_rule()
 def asignar_color_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es inferior o igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(perimetro):
@@ -1428,7 +1429,7 @@ def asignar_color_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, re
 @dynamic_representation_rule()
 def asignar_color_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(perimetro):
@@ -1439,7 +1440,7 @@ def asignar_color_si_perimetro_igual_valor(geometry, code_drawing, representatio
 @dynamic_representation_rule()
 def asignar_color_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es mayor o igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(perimetro):
@@ -1450,7 +1451,7 @@ def asignar_color_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, repre
 @dynamic_representation_rule()
 def asignar_color_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si el perímetro de la geometría es mayor que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(perimetro):
@@ -1461,7 +1462,7 @@ def asignar_color_si_perimetro_mayor_valor(geometry, code_drawing, representatio
 @dynamic_representation_rule()
 def asignar_color_si_z_minima_inferior_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor inferior que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] < float(valor):
@@ -1472,7 +1473,7 @@ def asignar_color_si_z_minima_inferior_valor(geometry, code_drawing, representat
 @dynamic_representation_rule()
 def asignar_color_si_z_minima_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor inferior o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] <= float(valor):
@@ -1483,7 +1484,7 @@ def asignar_color_si_z_minima_inferior_o_igual_valor(geometry, code_drawing, rep
 @dynamic_representation_rule()
 def asignar_color_si_z_minima_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] == float(valor):
@@ -1494,7 +1495,7 @@ def asignar_color_si_z_minima_igual_valor(geometry, code_drawing, representation
 @dynamic_representation_rule()
 def asignar_color_si_z_minima_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] >= float(valor):
@@ -1505,7 +1506,7 @@ def asignar_color_si_z_minima_mayor_o_igual_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_color_si_z_minima_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] > float(valor):
@@ -1516,7 +1517,7 @@ def asignar_color_si_z_minima_mayor_valor(geometry, code_drawing, representation
 @dynamic_representation_rule()
 def asignar_color_si_z_maxima_inferior_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor inferior que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] < float(valor):
@@ -1527,7 +1528,7 @@ def asignar_color_si_z_maxima_inferior_valor(geometry, code_drawing, representat
 @dynamic_representation_rule()
 def asignar_color_si_z_maxima_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor inferior o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] <= float(valor):
@@ -1538,7 +1539,7 @@ def asignar_color_si_z_maxima_inferior_o_igual_valor(geometry, code_drawing, rep
 @dynamic_representation_rule()
 def asignar_color_si_z_maxima_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] == float(valor):
@@ -1549,7 +1550,7 @@ def asignar_color_si_z_maxima_igual_valor(geometry, code_drawing, representation
 @dynamic_representation_rule()
 def asignar_color_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] >= float(valor):
@@ -1560,7 +1561,7 @@ def asignar_color_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_color_si_z_maxima_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] > float(valor):
@@ -1572,7 +1573,7 @@ def asignar_color_si_z_maxima_mayor_valor(geometry, code_drawing, representation
 @dynamic_representation_rule()
 def asignar_color_si_altura_menor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor menor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] < float(valor):
@@ -1583,7 +1584,7 @@ def asignar_color_si_altura_menor_valor(geometry, code_drawing, representations,
 @dynamic_representation_rule()
 def asignar_color_si_altura_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor menor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] <= float(valor):
@@ -1594,7 +1595,7 @@ def asignar_color_si_altura_menor_o_igual_valor(geometry, code_drawing, represen
 @dynamic_representation_rule()
 def asignar_color_si_altura_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] == float(valor):
@@ -1605,7 +1606,7 @@ def asignar_color_si_altura_igual_valor(geometry, code_drawing, representations,
 @dynamic_representation_rule()
 def asignar_color_si_altura_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] >= float(valor):
@@ -1616,7 +1617,7 @@ def asignar_color_si_altura_mayor_o_igual_valor(geometry, code_drawing, represen
 @dynamic_representation_rule()
 def asignar_color_si_altura_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] > float(valor):
@@ -1630,7 +1631,7 @@ def asignar_color_si_poligono_tiene_numero_huecos_menor_valor(geometry, code_dra
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) < int(numero_huecos):
@@ -1644,7 +1645,7 @@ def asignar_color_si_poligono_tiene_numero_huecos_menor_o_igual_valor(geometry, 
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) <= int(numero_huecos):
@@ -1658,7 +1659,7 @@ def asignar_color_si_poligono_tiene_numero_huecos_igual_valor(geometry, code_dra
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) == int(numero_huecos):
@@ -1672,7 +1673,7 @@ def asignar_color_si_poligono_tiene_numero_huecos_mayor_o_igual_valor(geometry, 
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) >= int(numero_huecos):
@@ -1686,7 +1687,7 @@ def asignar_color_si_poligono_tiene_numero_huecos_mayor_valor(geometry, code_dra
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) > int(numero_huecos):
@@ -1697,7 +1698,7 @@ def asignar_color_si_poligono_tiene_numero_huecos_mayor_valor(geometry, code_dra
 @dynamic_representation_rule()
 def asignar_color_si_numero_vertices_menor_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la geometría tiene un número de vértices inferior que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) < int(numero_vertices):
@@ -1708,7 +1709,7 @@ def asignar_color_si_numero_vertices_menor_valor(geometry, code_drawing, represe
 @dynamic_representation_rule()
 def asignar_color_si_numero_vertices_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la geometría tiene un número de vértices inferior o igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) <= int(numero_vertices):
@@ -1719,7 +1720,7 @@ def asignar_color_si_numero_vertices_menor_o_igual_valor(geometry, code_drawing,
 @dynamic_representation_rule()
 def asignar_color_si_numero_vertices_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la geometría tiene un número de vértices igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) == int(numero_vertices):
@@ -1730,7 +1731,7 @@ def asignar_color_si_numero_vertices_igual_valor(geometry, code_drawing, represe
 @dynamic_representation_rule()
 def asignar_color_si_numero_vertices_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la geometría tiene un número de vértices mayor o igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) >= int(numero_vertices):
@@ -1741,7 +1742,7 @@ def asignar_color_si_numero_vertices_mayor_o_igual_valor(geometry, code_drawing,
 @dynamic_representation_rule()
 def asignar_color_si_numero_vertices_mayor_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de dibujo el valor color_asignar si la geometría tiene un número de vértices mayor que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) > int(numero_vertices):
@@ -1756,7 +1757,7 @@ def asignar_color_aleatorio_segun_valor_atributo_bbdd(geometry, code_drawing, re
 	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
 	global colores_atributo_bbdd
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1782,7 +1783,7 @@ def asignar_color_aleatorio_segun_valor_atributo_diccionario_atributos(geometry,
 	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
 	global colores_atributo_bbdd
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1806,7 +1807,7 @@ def asignar_color_aleatorio_segun_valor_atributo_diccionario_atributos(geometry,
 @dynamic_representation_rule()
 def asignar_color_relleno(geometry, code_drawing, representations, nombre_codigo, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo (admite comodines)'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	representations[0].fill_type = digi3d.FillType.Color
@@ -1816,7 +1817,7 @@ def asignar_color_relleno(geometry, code_drawing, representations, nombre_codigo
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1833,7 +1834,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, r
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1850,7 +1851,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, r
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que igual a valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1867,7 +1868,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_o_igual_valor(geometry, code_dr
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene el valor valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1884,7 +1885,7 @@ def asignar_color_relleno_si_atributo_bbdd_igual_valor(geometry, code_drawing, r
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor mayor o igual que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1901,7 +1902,7 @@ def asignar_color_relleno_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing,
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor mayor que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1918,7 +1919,7 @@ def asignar_color_relleno_si_atributo_bbdd_mayor_valor(geometry, code_drawing, r
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1935,7 +1936,7 @@ def asignar_color_relleno_si_atributo_bbdd_es_nulo(geometry, code_drawing, repre
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor que no es nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1952,7 +1953,7 @@ def asignar_color_relleno_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, re
 @dynamic_representation_rule()
 def asignar_color_relleno_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -1975,7 +1976,7 @@ def asignar_color_relleno_si_multiples_atributos_bbdd_igual_valores(geometry, co
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -1990,7 +1991,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2005,7 +2006,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2020,7 +2021,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_menor_o_igual_valor(
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene el valor valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2035,7 +2036,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_igual_valor(geometry
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor o igual que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2050,7 +2051,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_o_igual(geomet
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2065,7 +2066,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_mayor_valor(geometry
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2080,7 +2081,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_es_nulo(geometry, co
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor que no es nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2095,7 +2096,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_no_es_nulo(geometry,
 @dynamic_representation_rule()
 def asignar_color_relleno_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	lista_atributos_y_valores = atributos_y_valores.split(' ')
@@ -2120,7 +2121,7 @@ def asignar_color_relleno_si_area_inferior_valor(geometry, code_drawing, represe
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < float(area):
@@ -2135,7 +2136,7 @@ def asignar_color_relleno_si_area_inferior_o_igual_valor(geometry, code_drawing,
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) <= float(area):
@@ -2150,7 +2151,7 @@ def asignar_color_relleno_si_area_igual_valor(geometry, code_drawing, representa
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) == float(area):
@@ -2165,7 +2166,7 @@ def asignar_color_relleno_si_area_mayor_igual_valor(geometry, code_drawing, repr
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) >= float(area):
@@ -2180,7 +2181,7 @@ def asignar_color_relleno_si_area_mayor_valor(geometry, code_drawing, representa
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) > float(area):
@@ -2192,7 +2193,7 @@ def asignar_color_relleno_si_area_mayor_valor(geometry, code_drawing, representa
 @dynamic_representation_rule()
 def asignar_color_relleno_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es inferior que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(perimetro):
@@ -2204,7 +2205,7 @@ def asignar_color_relleno_si_perimetro_inferior_valor(geometry, code_drawing, re
 @dynamic_representation_rule()
 def asignar_color_relleno_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es inferior o igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(perimetro):
@@ -2216,7 +2217,7 @@ def asignar_color_relleno_si_perimetro_inferior_o_igual_valor(geometry, code_dra
 @dynamic_representation_rule()
 def asignar_color_relleno_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(perimetro):
@@ -2228,7 +2229,7 @@ def asignar_color_relleno_si_perimetro_igual_valor(geometry, code_drawing, repre
 @dynamic_representation_rule()
 def asignar_color_relleno_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es mayor o igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(perimetro):
@@ -2240,7 +2241,7 @@ def asignar_color_relleno_si_perimetro_mayor_o_igual_valor(geometry, code_drawin
 @dynamic_representation_rule()
 def asignar_color_relleno_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si el perímetro de la geometría es mayor que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(perimetro):
@@ -2252,7 +2253,7 @@ def asignar_color_relleno_si_perimetro_mayor_valor(geometry, code_drawing, repre
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_minima_inferior_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor inferior que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] < float(valor):
@@ -2264,7 +2265,7 @@ def asignar_color_relleno_si_z_minima_inferior_valor(geometry, code_drawing, rep
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_minima_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor inferior o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] <= float(valor):
@@ -2276,7 +2277,7 @@ def asignar_color_relleno_si_z_minima_inferior_o_igual_valor(geometry, code_draw
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_minima_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] < float(valor):
@@ -2288,7 +2289,7 @@ def asignar_color_relleno_si_z_minima_igual_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_minima_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] >= float(valor):
@@ -2300,7 +2301,7 @@ def asignar_color_relleno_si_z_minima_mayor_o_igual_valor(geometry, code_drawing
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_minima_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z mínima de la geometría tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] > float(valor):
@@ -2312,7 +2313,7 @@ def asignar_color_relleno_si_z_minima_mayor_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_maxima_inferior_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor inferior que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] < float(valor):
@@ -2324,7 +2325,7 @@ def asignar_color_relleno_si_z_maxima_inferior_valor(geometry, code_drawing, rep
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_maxima_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor inferior o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] <= float(valor):
@@ -2336,7 +2337,7 @@ def asignar_color_relleno_si_z_maxima_inferior_o_igual_valor(geometry, code_draw
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_maxima_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] == float(valor):
@@ -2348,7 +2349,7 @@ def asignar_color_relleno_si_z_maxima_igual_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] >= float(valor):
@@ -2360,7 +2361,7 @@ def asignar_color_relleno_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing
 @dynamic_representation_rule()
 def asignar_color_relleno_si_z_maxima_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la coordenada Z máxima de la geometría tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] > float(valor):
@@ -2373,7 +2374,7 @@ def asignar_color_relleno_si_z_maxima_mayor_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_color_relleno_si_altura_menor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor menor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] < float(valor):
@@ -2385,7 +2386,7 @@ def asignar_color_relleno_si_altura_menor_valor(geometry, code_drawing, represen
 @dynamic_representation_rule()
 def asignar_color_relleno_si_altura_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor menor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] <= float(valor):
@@ -2397,7 +2398,7 @@ def asignar_color_relleno_si_altura_menor_o_igual_valor(geometry, code_drawing, 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_altura_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] == float(valor):
@@ -2409,7 +2410,7 @@ def asignar_color_relleno_si_altura_igual_valor(geometry, code_drawing, represen
 @dynamic_representation_rule()
 def asignar_color_relleno_si_altura_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] >= float(valor):
@@ -2421,7 +2422,7 @@ def asignar_color_relleno_si_altura_mayor_o_igual_valor(geometry, code_drawing, 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_altura_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] > float(valor):
@@ -2436,7 +2437,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_menor_valor(geometry, 
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) < int(valor):
@@ -2451,7 +2452,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_menor_o_igual_valor(ge
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) <= int(numero_huecos):
@@ -2466,7 +2467,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_igual_valor(geometry, 
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) == int(numero_huecos):
@@ -2481,7 +2482,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_mayor_o_igual_valor(ge
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) >= int(numero_huecos):
@@ -2496,7 +2497,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_mayor_valor(geometry, 
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) > int(numero_huecos):
@@ -2508,7 +2509,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_mayor_valor(geometry, 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_numero_vertices_menor_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la geometría tiene un número de vértices inferior que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) < int(numero_vertices):
@@ -2520,7 +2521,7 @@ def asignar_color_relleno_si_numero_vertices_menor_valor(geometry, code_drawing,
 @dynamic_representation_rule()
 def asignar_color_relleno_si_numero_vertices_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la geometría tiene un número de vértices inferior o igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) <= int(numero_vertices):
@@ -2532,7 +2533,7 @@ def asignar_color_relleno_si_numero_vertices_menor_o_igual_valor(geometry, code_
 @dynamic_representation_rule()
 def asignar_color_relleno_si_numero_vertices_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la geometría tiene un número de vértices igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) == int(numero_vertices):
@@ -2544,7 +2545,7 @@ def asignar_color_relleno_si_numero_vertices_igual_valor(geometry, code_drawing,
 @dynamic_representation_rule()
 def asignar_color_relleno_si_numero_vertices_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la geometría tiene un número de vértices mayor o igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) >= int(numero_vertices):
@@ -2556,7 +2557,7 @@ def asignar_color_relleno_si_numero_vertices_mayor_o_igual_valor(geometry, code_
 @dynamic_representation_rule()
 def asignar_color_relleno_si_numero_vertices_mayor_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, color_asignar):
 	'Asigna como color de relleno el valor color_asignar si la geometría tiene un número de vértices mayor que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) > int(numero_vertices):
@@ -2572,7 +2573,7 @@ def asignar_color_relleno_aleatorio_segun_valor_atributo_bbdd(geometry, code_dra
 	'Asigna un color aleatorio en función del valor de un campo de base de datos. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
 	global colores_relleno_atributo_bbdd
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2601,7 +2602,7 @@ def asignar_color_relleno_aleatorio_segun_valor_atributo_diccionario_atributos(g
 	'Asigna un color aleatorio en función del valor de un campo. Todas las geometrías que tengan el mismo valor se representarán con el mismo color'
 	global colores_relleno_atributo
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2626,7 +2627,7 @@ def asignar_color_relleno_aleatorio_segun_valor_atributo_diccionario_atributos(g
 @dynamic_representation_rule()
 def asignar_grosor(geometry, code_drawing, representations, nombre_codigo, grosor_asignar):
 	'Asigna como grosor el valor grosor_asignar al código nombre_codigo (admite comodines)'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	representations[0].weight = int(grosor_asignar)
@@ -2635,7 +2636,7 @@ def asignar_grosor(geometry, code_drawing, representations, nombre_codigo, groso
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2651,7 +2652,7 @@ def asignar_grosor_si_atributo_bbdd_menor_valor(geometry, code_drawing, represen
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que igual a valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2668,7 +2669,7 @@ def asignar_grosor_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, 
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene el valor valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2684,7 +2685,7 @@ def asignar_grosor_si_atributo_bbdd_igual_valor(geometry, code_drawing, represen
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor mayor o igual que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2700,7 +2701,7 @@ def asignar_grosor_si_atributo_bbdd_mayor_o_igual(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor mayor que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2716,7 +2717,7 @@ def asignar_grosor_si_atributo_bbdd_mayor_valor(geometry, code_drawing, represen
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2732,7 +2733,7 @@ def asignar_grosor_si_atributo_bbdd_es_nulo(geometry, code_drawing, representati
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor que no es nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2748,7 +2749,7 @@ def asignar_grosor_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, represent
 @dynamic_representation_rule()
 def asignar_grosor_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
@@ -2770,7 +2771,7 @@ def asignar_grosor_si_multiples_atributos_bbdd_igual_valores(geometry, code_draw
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2784,7 +2785,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_menor_valor(geometry, code_
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2799,7 +2800,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_menor_o_igual_valor(geometr
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene el valor valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2813,7 +2814,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_igual_valor(geometry, code_
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_mayor_o_igual(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor o igual que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2827,7 +2828,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_mayor_o_igual(geometry, cod
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_mayor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor mayor que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2842,7 +2843,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_mayor_valor(geometry, code_
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2856,7 +2857,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_es_nulo(geometry, code_draw
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor que no es nulo'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if nombre_atributo not in geometry.attributes:
@@ -2870,7 +2871,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_d
 @dynamic_representation_rule()
 def asignar_grosor_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	lista_atributos_y_valores = atributos_y_valores.split(' ')
@@ -2894,7 +2895,7 @@ def asignar_grosor_si_area_inferior_valor(geometry, code_drawing, representation
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < float(area):
@@ -2908,7 +2909,7 @@ def asignar_grosor_si_area_inferior_o_igual_valor(geometry, code_drawing, repres
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) <= float(area):
@@ -2922,7 +2923,7 @@ def asignar_grosor_si_area_igual_valor(geometry, code_drawing, representations, 
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) == float(area):
@@ -2936,7 +2937,7 @@ def asignar_grosor_si_area_mayor_igual_valor(geometry, code_drawing, representat
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) >= float(area):
@@ -2950,7 +2951,7 @@ def asignar_grosor_si_area_mayor_valor(geometry, code_drawing, representations, 
 	if not es_area(geometry):
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) > float(area):
@@ -2961,7 +2962,7 @@ def asignar_grosor_si_area_mayor_valor(geometry, code_drawing, representations, 
 @dynamic_representation_rule()
 def asignar_grosor_si_perimetro_inferior_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
 	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es inferior que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) < float(perimetro):
@@ -2972,7 +2973,7 @@ def asignar_grosor_si_perimetro_inferior_valor(geometry, code_drawing, represent
 @dynamic_representation_rule()
 def asignar_grosor_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
 	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es inferior o igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) <= float(perimetro):
@@ -2983,7 +2984,7 @@ def asignar_grosor_si_perimetro_inferior_o_igual_valor(geometry, code_drawing, r
 @dynamic_representation_rule()
 def asignar_grosor_si_perimetro_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
 	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) == float(perimetro):
@@ -2994,7 +2995,7 @@ def asignar_grosor_si_perimetro_igual_valor(geometry, code_drawing, representati
 @dynamic_representation_rule()
 def asignar_grosor_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
 	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es mayor o igual que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) >= float(perimetro):
@@ -3005,7 +3006,7 @@ def asignar_grosor_si_perimetro_mayor_o_igual_valor(geometry, code_drawing, repr
 @dynamic_representation_rule()
 def asignar_grosor_si_perimetro_mayor_valor(geometry, code_drawing, representations, nombre_codigo, perimetro, grosor_asignar):
 	'Asigna como grosor el valor grosor_asignar si el perímetro de la geometría es mayor que el valor perimetro'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if abs(digi3d.current_view().geographic_calculator.perimeter_2d(geometry)) > float(perimetro):
@@ -3016,7 +3017,7 @@ def asignar_grosor_si_perimetro_mayor_valor(geometry, code_drawing, representati
 @dynamic_representation_rule()
 def asignar_grosor_si_z_minima_inferior_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z mínima de la geometría tiene un valor inferior que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] < float(valor):
@@ -3027,7 +3028,7 @@ def asignar_grosor_si_z_minima_inferior_valor(geometry, code_drawing, representa
 @dynamic_representation_rule()
 def asignar_grosor_si_z_minima_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z mínima de la geometría tiene un valor inferior o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] <= float(valor):
@@ -3038,7 +3039,7 @@ def asignar_grosor_si_z_minima_inferior_o_igual_valor(geometry, code_drawing, re
 @dynamic_representation_rule()
 def asignar_grosor_si_z_minima_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z mínima de la geometría tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] == float(valor):
@@ -3049,7 +3050,7 @@ def asignar_grosor_si_z_minima_igual_valor(geometry, code_drawing, representatio
 @dynamic_representation_rule()
 def asignar_grosor_si_z_minima_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z mínima de la geometría tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] >= float(valor):
@@ -3060,7 +3061,7 @@ def asignar_grosor_si_z_minima_mayor_o_igual_valor(geometry, code_drawing, repre
 @dynamic_representation_rule()
 def asignar_grosor_si_z_minima_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z mínima de la geometría tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.min[2] > float(valor):
@@ -3071,7 +3072,7 @@ def asignar_grosor_si_z_minima_mayor_valor(geometry, code_drawing, representatio
 @dynamic_representation_rule()
 def asignar_grosor_si_z_maxima_inferior_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z máxima de la geometría tiene un valor inferior que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] < float(valor):
@@ -3082,7 +3083,7 @@ def asignar_grosor_si_z_maxima_inferior_valor(geometry, code_drawing, representa
 @dynamic_representation_rule()
 def asignar_grosor_si_z_maxima_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z máxima de la geometría tiene un valor inferior o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] <= float(valor):
@@ -3093,7 +3094,7 @@ def asignar_grosor_si_z_maxima_inferior_o_igual_valor(geometry, code_drawing, re
 @dynamic_representation_rule()
 def asignar_grosor_si_z_maxima_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z máxima de la geometría tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] == float(valor):
@@ -3104,7 +3105,7 @@ def asignar_grosor_si_z_maxima_igual_valor(geometry, code_drawing, representatio
 @dynamic_representation_rule()
 def asignar_grosor_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z máxima de la geometría tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] >= float(valor):
@@ -3115,7 +3116,7 @@ def asignar_grosor_si_z_maxima_mayor_o_igual_valor(geometry, code_drawing, repre
 @dynamic_representation_rule()
 def asignar_grosor_si_z_maxima_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la coordenada Z máxima de la geometría tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] > float(valor):
@@ -3127,7 +3128,7 @@ def asignar_grosor_si_z_maxima_mayor_valor(geometry, code_drawing, representatio
 @dynamic_representation_rule()
 def asignar_grosor_si_altura_menor_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor menor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] < float(valor):
@@ -3138,7 +3139,7 @@ def asignar_grosor_si_altura_menor_valor(geometry, code_drawing, representations
 @dynamic_representation_rule()
 def asignar_grosor_si_altura_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor menor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] <= float(valor):
@@ -3149,7 +3150,7 @@ def asignar_grosor_si_altura_menor_o_igual_valor(geometry, code_drawing, represe
 @dynamic_representation_rule()
 def asignar_grosor_si_altura_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] == float(valor):
@@ -3160,7 +3161,7 @@ def asignar_grosor_si_altura_igual_valor(geometry, code_drawing, representations
 @dynamic_representation_rule()
 def asignar_grosor_si_altura_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor mayor o igual que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] >= float(valor):
@@ -3171,7 +3172,7 @@ def asignar_grosor_si_altura_mayor_o_igual_valor(geometry, code_drawing, represe
 @dynamic_representation_rule()
 def asignar_grosor_si_altura_mayor_valor(geometry, code_drawing, representations, nombre_codigo, valor, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la altura de la geometría (z máxima - z mínima) tiene un valor mayor que valor'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if geometry.max[2] - geometry.min[2] > float(valor):
@@ -3185,7 +3186,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_menor_valor(geometry, code_dr
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) < int(valor):
@@ -3199,7 +3200,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_menor_o_igual_valor(geometry,
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) <= int(numero_huecos):
@@ -3213,7 +3214,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_igual_valor(geometry, code_dr
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) == int(numero_huecos):
@@ -3227,7 +3228,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_mayor_o_igual_valor(geometry,
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) >= int(numero_huecos):
@@ -3241,7 +3242,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_mayor_valor(geometry, code_dr
 	if type(geometry) is not digi3d.Polygon:
 		return representations
 
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry.holes) > int(numero_huecos):
@@ -3252,7 +3253,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_mayor_valor(geometry, code_dr
 @dynamic_representation_rule()
 def asignar_grosor_si_numero_vertices_menor_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la geometría tiene un número de vértices inferior que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) < int(numero_vertices):
@@ -3263,7 +3264,7 @@ def asignar_grosor_si_numero_vertices_menor_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_grosor_si_numero_vertices_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la geometría tiene un número de vértices inferior o igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) <= int(numero_vertices):
@@ -3274,7 +3275,7 @@ def asignar_grosor_si_numero_vertices_menor_o_igual_valor(geometry, code_drawing
 @dynamic_representation_rule()
 def asignar_grosor_si_numero_vertices_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la geometría tiene un número de vértices igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) == int(numero_vertices):
@@ -3285,7 +3286,7 @@ def asignar_grosor_si_numero_vertices_igual_valor(geometry, code_drawing, repres
 @dynamic_representation_rule()
 def asignar_grosor_si_numero_vertices_mayor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la geometría tiene un número de vértices mayor o igual que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) >= int(numero_vertices):
@@ -3296,7 +3297,7 @@ def asignar_grosor_si_numero_vertices_mayor_o_igual_valor(geometry, code_drawing
 @dynamic_representation_rule()
 def asignar_grosor_si_numero_vertices_mayor_valor(geometry, code_drawing, representations, nombre_codigo, numero_vertices, grosor_asignar):
 	'Asigna como grosor de dibujo el valor grosor_asignar si la geometría tiene un número de vértices mayor que numero_vertices'
-	if not compara_codigos_con_comodines(code_drawing.name, nombre_codigo):
+	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
 	if len(geometry) > int(numero_vertices):

@@ -9,8 +9,8 @@ Si quieres que añadamos tus propios controles de calidad, tan solo tienes que c
 
 El _Editor de Tablas de Códigos_ de _Digi3D.NET_ y el propio _Digi3D.NET_ localizan las funciones que realizan controles de calidad enumerando todas las que estén definidas en el entorno _Python_ que cumplan con las siguientes condiciones:
 
-1. Que están decoradas o envueltas con el el _function\_wrapper_ denominado __@quality_control__ 
-2. Que recibar al menos los parámetros `geometry`, `adding_geometry` y `code_index`.
+1. Que están decoradas o envueltas con el _function\_wrapper_ denominado __@quality_control__ 
+2. Que reciban al menos los parámetros `geometry`, `adding_geometry` y `code_index`.
 3. Que tengan una descripción.
 
 ### Function wrapper
@@ -114,7 +114,7 @@ Veamos un ejemplo muy sencillo de control de calidad que devuelve `digi3d.Geomet
 def debe_ser_punto(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo Punto'
     if type(geometry) is not digi3d.Point:
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Punto'.format(geometry.codes[0].name))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Punto'.format(geometry.codes[0].code))
 ```
 
 ### Comunicando a Digi3D.NET que la geometría tiene un error en relación con otra geometría
@@ -234,7 +234,7 @@ def atributo_bbdd_no_puede_ser_nulo(geometry, adding_geometry, code_index, nombr
     atributosCodigo = geometry.codes[code_index].attributes
 
     if nombre_atributo not in atributosCodigo:
-        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].name, nombre_atributo))
+        return digi3d.GeometryError('Se esperaba que el código {} de esta geometría tuviera un atributo con nombre {} pero no lo tiene'.format(geometry.codes[code_index].code, nombre_atributo))
 
     if atributosCodigo[nombre_atributo] is None:
         return digi3d.DatabaseFieldError('Atributo con valor nulo', code_index, nombre_atributo)
