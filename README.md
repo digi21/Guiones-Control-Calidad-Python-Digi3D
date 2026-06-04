@@ -1,9 +1,27 @@
 # Guiones de control de calidad en Digi3D.NET
 
-Este repositorio contiene guiones que se pueden pegar en la pestaña Python del programa [Editor de Tablas de Códigos](https://ayuda.digi21.net/digi3d-net/referencia/editor-de-tablas-de-codigos) para luego añadirlos en el campo __Controles de calidad a aplicar__ de cada código.
-De esta manera podemos añadir controles de calidad de una manera muy sencilla.
+Bienvenido al repositorio **comunitario** de controles de calidad para [Digi3D.NET](https://www.digi21.net).
 
-Si quieres que añadamos tus propios controles de calidad, tan solo tienes que clonar este repositorio, añadir tus controles de calidad y hacer un pull-request 😉.
+Aquí encontrarás guiones de Python que puedes pegar en la pestaña **Python** del programa
+[Editor de Tablas de Códigos](https://ayuda.digi21.net/digi3d-net/referencia/editor-de-tablas-de-codigos)
+y luego asignar en el campo **Controles de calidad a aplicar** de cada código. Así puedes validar tus
+geometrías (durante la digitalización o a petición) de forma muy sencilla, sin tener que programar nada
+si ya existe el control que necesitas.
+
+## ✍️ ¿Quieres colaborar?
+
+¡Tus controles de calidad son bienvenidos! Si has escrito uno que te resulta útil, compártelo con el resto
+de la comunidad:
+
+1. Haz un **_fork_** de este repositorio (o clónalo).
+2. Añade tu función de control de calidad (siguiendo las normas que se describen más abajo: decorador
+   `@quality_control`, parámetros obligatorios y una línea de documentación con la descripción).
+3. Abre un **_pull request_**. Lo revisaremos e integraremos 😉.
+
+¿Tienes una idea, una duda o has encontrado un fallo? Abre una
+[_issue_](https://github.com/digi21/Guiones-Control-Calidad-Python-Digi3D/issues) y lo comentamos.
+
+A continuación tienes la **referencia completa** para escribir tus propios controles de calidad.
 
 ## Declaración de un control de calidad
 
