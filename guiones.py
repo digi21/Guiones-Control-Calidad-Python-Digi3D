@@ -83,8 +83,11 @@ def compara_codigos_con_comodines(codigo_a, codigo_b):
         El comodín ? sustituye cualquier carácter.
 
         Ej: 12?45 devuelve verdadero para 12a45, 12b45, 12045, 12945, etc.
-            12* devuelve verdadero para cualquier código que comience con 12, como por ejemplo 12abcdefg 
+            12* devuelve verdadero para cualquier código que comience con 12, como por ejemplo 12abcdefg
     '''
+    # Un código formado solo por cifras y sin cero inicial llega como int desde los parámetros
+    codigo_a = str(codigo_a)
+    codigo_b = str(codigo_b)
     tamanoCodigoA = len(codigo_a)
     tamanoCodigoB = len(codigo_b)
     for i in range(min(tamanoCodigoA, tamanoCodigoB)):
@@ -139,7 +142,8 @@ def tiene_el_codigo_o_etiqueta(g, nombre_codigo_o_etiqueta):
         Si el código pasado es una etiqueta, se devuelve verdadero si la geometría tiene un código de entre los que tienen asignada dicha etiqueta en la tabla de códigos activa.
         Si el código pasado no es una etiqueta, se busca con comodines, de manera que se puede poner por ejemplo 0204*
     '''
-    for codigo in nombre_codigo_o_etiqueta.split():
+    # Un código formado solo por cifras y sin cero inicial llega como int desde los parámetros
+    for codigo in str(nombre_codigo_o_etiqueta).split():
         if codigo[0] == '#':
             if tiene_algun_codigo_de_etiqueta(g, codigo[1:]):
                 return True
