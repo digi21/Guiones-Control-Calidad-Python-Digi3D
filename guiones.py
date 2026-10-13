@@ -77,6 +77,11 @@ def como_poligono(area):
     # Varias relaciones de digi21.base solo admiten un polígono como primer operando de una relación entre áreas
     return digi3d.Polygon((), list(area))
 
+def dentro_de_area(poligono, otro_poligono):
+    'Devuelve verdadero si poligono está dentro de otro_poligono, toque o no su borde'
+    # within exige al menos dos vértices en el borde; completely_within, ninguno
+    return poligono.within(otro_poligono) or poligono.completely_within(otro_poligono)
+
 def compara_codigos_con_comodines(codigo_a, codigo_b):
     ''' Compara dos códigos utilizando comodines.
         El comodín * indica que el resto de la cadena es válido.
@@ -327,7 +332,7 @@ def si_es_area_debe_estar_dentro_de_area(geometry, adding_geometry, code_index, 
         return
 
     poligono = como_poligono(geometry)
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: poligono.within(como_poligono(área))):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: dentro_de_area(poligono, como_poligono(área))):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
