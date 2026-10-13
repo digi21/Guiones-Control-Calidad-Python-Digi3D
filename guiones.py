@@ -306,7 +306,8 @@ def si_es_area_debe_ser_adyacente_area(geometry, adding_geometry, code_index, c�
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: área.adjacent(geometry)):
+    poligono = como_poligono(geometry)
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: como_poligono(área).adjacent(poligono)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -325,7 +326,8 @@ def si_es_area_debe_estar_dentro_de_area(geometry, adding_geometry, code_index, 
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.within(área)):
+    poligono = como_poligono(geometry)
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: poligono.within(como_poligono(área))):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -334,7 +336,8 @@ def si_es_area_debe_ser_estar_separado_de_area(geometry, adding_geometry, code_i
     if not es_area(geometry):
         return
 
-    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not área.disjoint(geometry)):
+    poligono = como_poligono(geometry)
+    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: not como_poligono(área).disjoint(poligono)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -352,7 +355,8 @@ def si_es_area_debe_unirse_con_otra_area(geometry, adding_geometry, code_index, 
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: área.touches(geometry)):
+    poligono = como_poligono(geometry)
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: como_poligono(área).touches(poligono)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
