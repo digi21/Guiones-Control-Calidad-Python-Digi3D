@@ -2299,7 +2299,7 @@ def asignar_color_relleno_si_z_minima_igual_valor(geometry, code_drawing, repres
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
-	if geometry.min[2] < float(valor):
+	if geometry.min[2] == float(valor):
 		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
