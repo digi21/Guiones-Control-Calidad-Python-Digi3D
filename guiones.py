@@ -69,6 +69,14 @@ def es_area(g):
 
     return False
 
+def como_poligono(area):
+    'Devuelve el área como polígono: el propio polígono o, si es una línea cerrada, un polígono sin huecos con sus vértices'
+    if type(area) is digi3d.Polygon:
+        return area
+
+    # Varias relaciones de digi21.base solo admiten un polígono como primer operando de una relación entre áreas
+    return digi3d.Polygon((), list(area))
+
 def compara_codigos_con_comodines(codigo_a, codigo_b):
     ''' Compara dos códigos utilizando comodines.
         El comodín * indica que el resto de la cadena es válido.
@@ -302,7 +310,8 @@ def si_es_area_debe_estar_completamente_dentro_de_area(geometry, adding_geometry
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.completely_within(área)):
+    poligono = como_poligono(geometry)
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: poligono.completely_within(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -329,7 +338,7 @@ def si_es_area_debe_ser_igual_a_otra_area(geometry, adding_geometry, code_index,
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: área.equals(geometry)):
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: como_poligono(área).equals(geometry)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -347,7 +356,8 @@ def si_es_area_debe_solapar_otra_area(geometry, adding_geometry, code_index, có
     if not es_area(geometry):
         return
 
-    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.overlaps(área)):
+    poligono = como_poligono(geometry)
+    if not algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: poligono.overlaps(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -356,7 +366,8 @@ def si_es_area_no_puede_solapar_otra_area(geometry, adding_geometry, code_index,
     if not es_area(geometry):
         return
 
-    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: geometry.overlaps(área)):
+    poligono = como_poligono(geometry)
+    if algun_area_con_codigo(geometry, código_o_etiqueta_areas_analizar, lambda área: poligono.overlaps(área)):
         return digi3d.GeometryError(mensaje)
 
 @quality_control()
@@ -929,6 +940,10 @@ def si_es_linea_no_puede_cruzar_linea(geometry, adding_geometry, code_index, có
     errores_detectados = []
 
     for candidato in candidatos:
+        # cross_vertices solo admite dos geometrías de tipo Line
+        if type(candidato) is not digi3d.Line:
+            continue
+
         if candidato == geometry:
             continue
 
