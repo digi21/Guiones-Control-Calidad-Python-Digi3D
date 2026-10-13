@@ -2440,7 +2440,7 @@ def asignar_color_relleno_si_poligono_tiene_numero_huecos_menor_valor(geometry, 
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
-	if len(geometry.holes) < int(valor):
+	if len(geometry.holes) < int(numero_huecos):
 		representations[0].fill_type = digi3d.FillType.Color
 		representations[0].fill_color = texto_a_color(color_asignar)
 
@@ -3189,7 +3189,7 @@ def asignar_grosor_si_poligono_tiene_numero_huecos_menor_valor(geometry, code_dr
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
-	if len(geometry.holes) < int(valor):
+	if len(geometry.holes) < int(numero_huecos):
 		representations[0].weight = int(grosor_asignar)
 
 	return representations
