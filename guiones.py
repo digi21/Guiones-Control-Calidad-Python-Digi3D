@@ -261,7 +261,7 @@ def alguna_geometria(geometría_analizando, callback_incluir_geometria, callback
     for g in no_eliminadas(digi3d.current_view()):
         # No contamos la geometría que se está analizando
         if g == geometría_analizando:
-            pass
+            continue
         
         if not callback_incluir_geometria(g):
             continue
