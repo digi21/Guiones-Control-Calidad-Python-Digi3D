@@ -52,7 +52,7 @@ def es_maestra(coordenada_z, equidistancia, intervalo_maestras=5):
     return 0 == coordenada_z % (intervalo_maestras * equidistancia)
 
 def es_fina(coordenada_z, equidistancia, intervalo_maestras=5):
-    'Devuelve verdadero si la coordenada Z pasada por parámetro corresponde a la de una curva de nivel maestra para una equidistancia de curvas y un determinado intervalo de curvas de nivel'
+    'Devuelve verdadero si la coordenada Z pasada por parámetro corresponde a la de una curva de nivel fina para una equidistancia de curvas y un determinado intervalo de curvas de nivel'
     if not es_curva_fina_o_maestra(coordenada_z, equidistancia):
         return False
 
@@ -261,7 +261,7 @@ def que_tengan_algun_codigo_de_etiqueta(geometrías, etiqueta):
     return filter(lambda geometría : tiene_algun_codigo_de_etiqueta(geometría, etiqueta), geometrías)
 
 def alguna_geometria(geometría_analizando, callback_incluir_geometria, callback_condicion):
-    'Itera por todas las geometrías del archivo de dibujo y devuelve verdadero si se localiza una con la que devuelvan True tanto la función callback_incluir_geometria como la función callback_concicion'
+    'Itera por las geometrías no borradas de los archivos cargados, salvo la geometría analizada, y devuelve verdadero si se localiza una con la que devuelvan True tanto la función callback_incluir_geometria como la función callback_condicion'
     for g in no_eliminadas(digi3d.current_view()):
         # No contamos la geometría que se está analizando
         if g == geometría_analizando:
@@ -291,9 +291,10 @@ def algun_texto_con_codigo(geometría_analizando, código_o_etiqueta_textos_anal
     return alguna_geometria(geometría_analizando, lambda g: type(g) is digi3d.Text and tiene_el_codigo_o_etiqueta(g, código_o_etiqueta_textos_analizar), callback_condicion)
 
 def cuyas_maximas_minimas_solapen_con(geometrías, geometria):
-    '''Devuelve el subconjunto de las geometrías pasadas por parámetro que no están eliminadas.
+    '''Devuelve el subconjunto de las geometrías pasadas por parámetro cuya caja envolvente en planta se solapa con la de geometria.
     Argumentos:
         geometrías: Geometrías a analizar.
+        geometria: Geometría con la que se compara la caja envolvente.
     '''
     return filter(lambda g : g.maxmin_overlaps_2d(geometria), geometrías)
 
@@ -329,7 +330,7 @@ def si_es_area_debe_estar_dentro_de_area(geometry, adding_geometry, code_index, 
 
 @quality_control()
 def si_es_area_debe_ser_estar_separado_de_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    'Si la geometría que se está analizando es un área, comunica un error si se localiza en el archivo de dibujo otra área que no sea disjunta (es decir, que solape, cruce, esté en el interior...) de la geometría ques e está analizando'
+    'Si la geometría que se está analizando es un área, comunica un error si se localiza en el archivo de dibujo otra área que no sea disjunta (es decir, que solape, cruce, esté en el interior...) de la geometría que se está analizando'
     if not es_area(geometry):
         return
 
@@ -376,7 +377,7 @@ def si_es_area_no_puede_solapar_otra_area(geometry, adding_geometry, code_index,
 
 @quality_control()
 def debe_tener_asignado_un_atributo(geometry, adding_geometry, code_index, nombre_atributo, valor_esperado, mensaje):
-    'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado'
+    'Comunica un error si la geometría no tiene el atributo nombre_atributo. No usa los parámetros valor_esperado ni mensaje'
     atributos = geometry.attributes
 
     if nombre_atributo not in atributos:
@@ -384,7 +385,7 @@ def debe_tener_asignado_un_atributo(geometry, adding_geometry, code_index, nombr
 
 @quality_control()
 def debe_tener_asignado_un_atributo_con_valor_igual_a(geometry, adding_geometry, code_index, nombre_atributo, valor_esperado, mensaje):
-    'Comunica un error si el código que se está analizando no tiene entre sus atributos el atributo pasado por parámetros o si el valor de este atributo no coincide con el del valor esperado'
+    'Comunica un error si la geometría no tiene el atributo nombre_atributo o si su valor es distinto de valor_esperado'
     atributos = geometry.attributes
 
     if nombre_atributo not in atributos:
@@ -428,7 +429,7 @@ def atributo_bbdd_debe_ser_mayor_o_igual(geometry, adding_geometry, code_index, 
 
 @quality_control()
 def si_es_linea_debe_ser_adyacente_a_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área que solape dicha línea.'
+    'Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área adyacente a dicha línea.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -437,7 +438,7 @@ def si_es_linea_debe_ser_adyacente_a_area(geometry, adding_geometry, code_index,
 
 @quality_control()
 def si_es_linea_debe_estar_completamente_dentro_de_area(geometry, adding_geometry, code_index, código_o_etiqueta_areas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área que solape dicha línea. '
+    'Si la geometría que se está analizando es una línea, comunica un error si no se localiza en el archivo de dibujo un área dentro de la cual esté dicha línea (relación within).'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -455,7 +456,7 @@ def si_es_linea_debe_cruzar_area(geometry, adding_geometry, code_index, código_
 
 @quality_control()
 def si_es_linea_debe_cruzar_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error si esta no cruza ningún área del archivo de dibujo.'
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no cruza ninguna línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -482,7 +483,7 @@ def si_es_linea_debe_estar_separado_de_linea(geometry, adding_geometry, code_ind
 
 @quality_control()
 def si_es_linea_debe_ser_igual_a_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error si se encuentra en el archivo de dibujo otra línea que no sea igual que esta.'
+    'Si la geometría que se está analizando es una línea, comunica un error si no se encuentra en el archivo de dibujo otra línea igual que esta.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -500,7 +501,7 @@ def si_es_linea_debe_unirse_con_area(geometry, adding_geometry, code_index, cód
 
 @quality_control()
 def si_es_linea_debe_unirse_con_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error ésta no se une con ninguna línea del archivo de dibujo.'
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no se une con ninguna línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -509,7 +510,7 @@ def si_es_linea_debe_unirse_con_linea(geometry, adding_geometry, code_index, có
 
 @quality_control()
 def si_es_linea_debe_solapar_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error ésta no solapa con ninguna línea del archivo de dibujo.'
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no solapa con ninguna línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -536,7 +537,7 @@ def si_es_linea_debe_terminar_en_borde_area(geometry, adding_geometry, code_inde
 
 @quality_control()
 def si_es_linea_debe_terminar_en_extremo_de_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error ésta no termina en el extremo de otra línea del archivo de dibujo.'
+    'Si la geometría que se está analizando es una línea, comunica un error si esta no termina en el extremo de otra línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -545,7 +546,7 @@ def si_es_linea_debe_terminar_en_extremo_de_linea(geometry, adding_geometry, cod
 
 @quality_control()
 def si_es_linea_debe_terminar_en_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error ésta no termina en otra línea del archivo de dibujo.'
+    'Si la geometría que se está analizando es una línea, comunica un error si el extremo de esta no toca otra línea del archivo de dibujo fuera de los extremos de esa otra línea.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -563,7 +564,7 @@ def si_es_punto_debe_coincidir_con_area(geometry, adding_geometry, code_index, c
 
 @quality_control()
 def si_es_punto_debe_coincidir_con_extremo_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es un punto, comunica un error si este no termina en el extremo de otra línea del archivo de dibujo.'
+    'Si la geometría que se está analizando es un punto, comunica un error si este no coincide con el extremo de ninguna línea del archivo de dibujo.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -572,7 +573,7 @@ def si_es_punto_debe_coincidir_con_extremo_linea(geometry, adding_geometry, code
 
 @quality_control()
 def si_es_punto_debe_coincidir_con_linea(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es un punto, comunica un error si este no termina en una línea (excluyendo sus extremos) del archivo de dibujo.'
+    'Si la geometría que se está analizando es un punto, comunica un error si este no coincide con un vértice de alguna línea del archivo de dibujo, excluidos sus extremos.'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -634,7 +635,7 @@ def debe_ser_area(geometry, adding_geometry, code_index):
 def debe_ser_complejo(geometry, adding_geometry, code_index):
     'Comunica un error si la geometría no es de tipo Complejo'
     if type(geometry) is not digi3d.Complex:
-	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Texto'.format(geometry.codes[0].code))
+	    return digi3d.GeometryError('Las geometrías con el código {} deben ser de tipo Complejo'.format(geometry.codes[0].code))
 
 @quality_control()
 def debe_ser_linea(geometry, adding_geometry, code_index):
@@ -662,7 +663,7 @@ def debe_ser_texto(geometry, adding_geometry, code_index):
 
 @quality_control()
 def debe_tener_area_igual_o_mayor(geometry, adding_geometry, code_index, area_minima):
-    'Tiene que tener un perímetro superior a un valor'
+    'Comunica un error si la geometría es una línea o un polígono y el valor absoluto de su área es menor que area_minima'
 
     if type(geometry) is not digi3d.Line and type(geometry) is not digi3d.Polygon:
         return
@@ -671,7 +672,7 @@ def debe_tener_area_igual_o_mayor(geometry, adding_geometry, code_index, area_mi
     calculado con las coordenadas en grados. Para solucionar este problema, utilizamos la calculadora geográfica de la ventana de 
     dibujo que sabe en qué sistema de coordenadas, está y en caso de ser geográfico, calcula el área en metros cuadrados'''
     if abs(digi3d.current_view().geographic_calculator.calculate_area(geometry)) < area_minima:
-        return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un área mayor o igual que {}'.format(geometry.codes[0].code, area_minima))
+        return digi3d.GeometryError('Las geometrías con el código {} deben tener un área mayor o igual que {}'.format(geometry.codes[0].code, area_minima))
 
 @quality_control()
 def debe_tener_perimetro_mayor_o_igual(geometry, adding_geometry, code_index, perimetro):
@@ -679,10 +680,10 @@ def debe_tener_perimetro_mayor_o_igual(geometry, adding_geometry, code_index, pe
 
     '''Si el archivo de dibujo está en coordenadas geográficas, el valor devuelto por la propiedad .perimeter_2d de la geometría estará
     calculado con las coordenadas en grados. Para solucionar este problema, utilizamos la calculadora geográfica de la ventana de 
-    dibujo que sabe en qué sistema de coordenadas está, y en caso de ser geográfico, calcula el área en metros cuadrados'''
+    dibujo que sabe en qué sistema de coordenadas está, y en caso de ser geográfico, calcula el perímetro en metros'''
     if digi3d.current_view().geographic_calculator.perimeter_2d(geometry) >= perimetro:
         return
-    return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un perímetro mayor o igual que {}'.format(geometry.codes[0].code, perimetro))
+    return digi3d.GeometryError('Las geometrías con el código {} deben tener un perímetro mayor o igual que {}'.format(geometry.codes[0].code, perimetro))
 
 @quality_control()
 def debe_tener_perimetro_mayor(geometry, adding_geometry, code_index, perimetro):
@@ -690,14 +691,14 @@ def debe_tener_perimetro_mayor(geometry, adding_geometry, code_index, perimetro)
 
     '''Si el archivo de dibujo está en coordenadas geográficas, el valor devuelto por la propiedad .perimeter_2d de la geometría estará
     calculado con las coordenadas en grados. Para solucionar este problema, utilizamos la calculadora geográfica de la ventana de 
-    dibujo que sabe en qué sistema de coordenadas está, y en caso de ser geográfico, calcula el área en metros cuadrados'''
+    dibujo que sabe en qué sistema de coordenadas está, y en caso de ser geográfico, calcula el perímetro en metros'''
     if digi3d.current_view().geographic_calculator.perimeter_2d(geometry) > perimetro:
         return
-    return digi3d.GeometryError('Las geometrías con el código {} deben ser tener un perímetro mayor que {}'.format(geometry.codes[0].code, perimetro))
+    return digi3d.GeometryError('Las geometrías con el código {} deben tener un perímetro mayor que {}'.format(geometry.codes[0].code, perimetro))
 
 @quality_control()
 def debe_tener_todos_los_vertices_con_la_misma_coordenada_z(geometry, adding_geometry, code_index):
-    'Comunica un error si localiza un vértice con la coordenada Z distinta de la del vértice anterior'
+    'Comunica un error si localiza un vértice con la coordenada Z distinta de la del primer vértice'
     if digi3d.same_coordinates(geometry.min[2], geometry.max[2]):
         return
     
@@ -768,7 +769,7 @@ def debe_tener_coordenadas_z_decrecientes_moderado(geometry, adding_geometry, co
 
 @quality_control()
 def al_tocar_lineas_debe_haber_una_diferencia_de_z_inferior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
-    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    'Comunica un error en cada vértice en el que la geometría coincide en planta con un vértice de otra geometría con los códigos indicados y la diferencia de coordenada Z entre los dos vértices es superior o igual a la tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
@@ -801,7 +802,7 @@ def al_tocar_lineas_debe_haber_una_diferencia_de_z_inferior_a(geometry, adding_g
 
 @quality_control()
 def al_tocar_lineas_debe_haber_una_diferencia_de_z_inferior_o_igual_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
-    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    'Comunica un error en cada vértice en el que la geometría coincide en planta con un vértice de otra geometría con los códigos indicados y la diferencia de coordenada Z entre los dos vértices es superior a la tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
@@ -834,7 +835,7 @@ def al_tocar_lineas_debe_haber_una_diferencia_de_z_inferior_o_igual_a(geometry, 
 
 @quality_control()
 def al_tocar_lineas_debe_haber_una_diferencia_de_z_superior_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
-    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    'Comunica un error en cada vértice en el que la geometría coincide en planta con un vértice de otra geometría con los códigos indicados y la diferencia de coordenada Z entre los dos vértices es inferior o igual a la tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
@@ -867,7 +868,7 @@ def al_tocar_lineas_debe_haber_una_diferencia_de_z_superior_a(geometry, adding_g
 
 @quality_control()
 def al_tocar_lineas_debe_haber_una_diferencia_de_z_superior_o_igual_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
-    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    'Comunica un error en cada vértice en el que la geometría coincide en planta con un vértice de otra geometría con los códigos indicados y la diferencia de coordenada Z entre los dos vértices es inferior a la tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
@@ -900,7 +901,7 @@ def al_tocar_lineas_debe_haber_una_diferencia_de_z_superior_o_igual_a(geometry, 
 
 @quality_control()
 def al_tocar_lineas_debe_haber_una_diferencia_de_z_igual_a(geometry, adding_geometry, code_index, código_o_etiqueta_analizar, tolerancia):
-    'Comunica un error si se localiza un cruce con otra línea y la diferencia en coordenadas Z entre las dos líneas es superior a una tolerancia.'
+    'Comunica un error en cada vértice en el que la geometría coincide en planta con un vértice de otra geometría con los códigos indicados y la diferencia de coordenada Z entre los dos vértices es distinta de la tolerancia.'
     candidatos = no_eliminadas(digi3d.current_view())
     candidatos = cuyas_maximas_minimas_solapen_con(candidatos, geometry)
     candidatos = que_tengan_el_codigo_o_etiqueta(candidatos, código_o_etiqueta_analizar)
@@ -968,7 +969,7 @@ def si_es_linea_no_puede_cruzar_linea(geometry, adding_geometry, code_index, có
 
 @quality_control()
 def no_puede_estar_a_menor_distancia_que(geometry, adding_geometry, code_index, código_o_etiqueta_puntos_analizar, distancia):
-    'Si la geometría que se está analizando es de tipo punto, comprueba su distancia al resto de puntos del archivo de dibujo y devuelve error en caso de que esta sea inferior al parámetro distancia'
+    'Si la geometría que se está analizando es de tipo punto, comprueba su distancia a los vértices de las geometrías del archivo de dibujo con los códigos indicados y devuelve error en caso de que esta sea inferior al parámetro distancia'
     if type(geometry) is not digi3d.Point:
         return
 
@@ -997,7 +998,7 @@ def no_puede_estar_a_menor_distancia_que(geometry, adding_geometry, code_index, 
 
 @quality_control()
 def si_es_linea_solo_puede_continuar_con_lineas_con_codigo(geometry, adding_geometry, code_index, código_o_etiqueta_lineas_analizar, mensaje):
-    'Si la geometría que se está analizando es una línea, comunica un error ésta continua con otra que no tenga el código o códigos especificados.'
+    'Si la geometría que se está analizando es una línea, comunica un error si su extremo toca el extremo de otra línea que no tenga el código o códigos especificados.'
     if type(geometry) is not digi3d.Line:
         return
 
@@ -1048,18 +1049,18 @@ def la_coordenada_z_del_primer_vertice_debe_ser_el_de_una_curva_fina(geometry, a
 
 @quality_control()
 def debe_tener_ancho_y_alto_mayor_o_igual_valor_o_linea(geometry, adding_geometry, code_index, ancho, alto):
-    'Comunica un error si el ancho y el largo no son mayores que los parámetros'
+    'Comunica un error si la dimensión menor de la caja envolvente en planta es inferior a ancho o si la dimensión mayor es inferior a alto'
     ancho_geometria = geometry.max[0] - geometry.min[0]
     alto_geometria = geometry.max[1] - geometry.min[1]
 
     if min(ancho_geometria, alto_geometria) >= ancho and max(ancho_geometria, alto_geometria) >= alto:
         return
 
-    return digi3d.GeometryError('Esta geometría tiene un ancho inferior a {} y un largo inferior a {} y por lo tanto debería haberse digitalizado como una línea')
+    return digi3d.GeometryError('Esta geometría tiene un ancho inferior a {} o un largo inferior a {} y por lo tanto debería haberse digitalizado como una línea'.format(ancho, alto))
 
 @quality_control()
 def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_superior_a_valor(geometry, adding_geometry, code_index, distancia):
-    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia entre el valor absoluto de la Z de algún vértice y el valor absoluto de la proyección en el MDT es superior a una distancia'
+    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si el valor absoluto de la diferencia entre la Z de algún vértice y la Z proyectada en el MDT, ambas truncadas a entero, es superior a una distancia'
     v = digi3d.current_view()
 
     for coordenada in geometry:
@@ -1074,7 +1075,7 @@ def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_superior
 
 @quality_control()
 def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_interior_a_valor(geometry, adding_geometry, code_index, distancia):
-    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si la diferencia entre el valor absoluto de la Z de algún vértice y el valor absoluto de la proyección en el MDT es inferios a una distancia'
+    'Proyecta los vértices de la geometría contra los MDTs cargados y genera un error si el valor absoluto de la diferencia entre la Z de algún vértice y la Z proyectada en el MDT, ambas truncadas a entero, es inferior a una distancia'
     v = digi3d.current_view()
 
     for coordenada in geometry:
@@ -1085,7 +1086,7 @@ def marcar_error_si_diferencia_z_de_zetas_absolutas_al_proyectar_mdt_es_interior
 
         distancia_calculada = abs(int(z_proyectada) - int(coordenada[2]))
         if distancia_calculada < distancia:
-            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es superior a: {}'.format(distancia_calculada, distancia), coordenada)
+            return digi3d.GeometryError('Vértice de la geometría con una diferencia en Z con respecto al MDT de: {} que es inferior a: {}'.format(distancia_calculada, distancia), coordenada)
 
 # Reglas para la representación de geometrías --------------------------------------------------------------------------
 
@@ -1118,7 +1119,7 @@ def asignar_color_si_atributo_bbdd_menor_valor(geometry, code_drawing, represent
 
 @dynamic_representation_rule()
 def asignar_color_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior o igual a valor_esperado'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -1214,7 +1215,7 @@ def asignar_color_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, representa
 
 @dynamic_representation_rule()
 def asignar_color_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -1250,7 +1251,7 @@ def asignar_color_si_atributo_diccionario_atributos_menor_valor(geometry, code_d
 
 @dynamic_representation_rule()
 def asignar_color_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior o igual a valor_esperado'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -1334,7 +1335,7 @@ def asignar_color_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_dr
 
 @dynamic_representation_rule()
 def asignar_color_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	'Asigna como color de dibujo el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -1369,7 +1370,7 @@ def asignar_color_si_area_inferior_valor(geometry, code_drawing, representations
 
 @dynamic_representation_rule()
 def asignar_color_si_area_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar si el área de la geometría es inferior que el valor area'
+	'Asigna como color de dibujo el valor color_asignar si el área de la geometría es inferior o igual que el valor area'
 	if not es_area(geometry):
 		return representations
 
@@ -1383,7 +1384,7 @@ def asignar_color_si_area_inferior_o_igual_valor(geometry, code_drawing, represe
 
 @dynamic_representation_rule()
 def asignar_color_si_area_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de dibujo el valor color_asignar si el área de la geometría es inferior o igual que el valor area'
+	'Asigna como color de dibujo el valor color_asignar si el área de la geometría es igual que el valor area'
 	if not es_area(geometry):
 		return representations
 
@@ -1852,7 +1853,7 @@ def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, r
 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
-	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior o igual a valor_esperado'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -1954,7 +1955,7 @@ def asignar_color_relleno_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, re
 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
-	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -1992,7 +1993,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry
 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
-	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior o igual a valor_esperado'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -2082,7 +2083,7 @@ def asignar_color_relleno_si_atributo_diccionario_atributos_no_es_nulo(geometry,
 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, color_asignar):
-	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -2119,7 +2120,7 @@ def asignar_color_relleno_si_area_inferior_valor(geometry, code_drawing, represe
 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_area_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de relleno el valor color_asignar si el área de la geometría es inferior que el valor area'
+	'Asigna como color de relleno el valor color_asignar si el área de la geometría es inferior o igual que el valor area'
 	if not es_area(geometry):
 		return representations
 
@@ -2134,7 +2135,7 @@ def asignar_color_relleno_si_area_inferior_o_igual_valor(geometry, code_drawing,
 
 @dynamic_representation_rule()
 def asignar_color_relleno_si_area_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, color_asignar):
-	'Asigna como color de relleno el valor color_asignar si el área de la geometría es inferior o igual que el valor area'
+	'Asigna como color de relleno el valor color_asignar si el área de la geometría es igual que el valor area'
 	if not es_area(geometry):
 		return representations
 
@@ -2638,7 +2639,7 @@ def asignar_grosor_si_atributo_bbdd_menor_valor(geometry, code_drawing, represen
 
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
-	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior o igual a valor_esperado'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -2735,7 +2736,7 @@ def asignar_grosor_si_atributo_bbdd_no_es_nulo(geometry, code_drawing, represent
 
 @dynamic_representation_rule()
 def asignar_grosor_si_multiples_atributos_bbdd_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, grosor_asignar):
-	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si los atributos de BBDD coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -2771,7 +2772,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_menor_valor(geometry, code_
 
 @dynamic_representation_rule()
 def asignar_grosor_si_atributo_diccionario_atributos_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, grosor_asignar):
-	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que igual a valor_esperado'
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior o igual a valor_esperado'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -2857,7 +2858,7 @@ def asignar_grosor_si_atributo_diccionario_atributos_no_es_nulo(geometry, code_d
 
 @dynamic_representation_rule()
 def asignar_grosor_si_multiples_atributos_diccionario_atributos_igual_valores(geometry, code_drawing, representations, nombre_codigo, atributos_y_valores, grosor_asignar):
-	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN coinciden'
+	'Asigna como grosor de dibujo el valor grosor_asignar al código nombre_codigo si los atributos coinciden con la lista atributo1 valor1 atributo2 valor2 ... atributoN valorN'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
 		return representations
 
@@ -2892,7 +2893,7 @@ def asignar_grosor_si_area_inferior_valor(geometry, code_drawing, representation
 
 @dynamic_representation_rule()
 def asignar_grosor_si_area_inferior_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, grosor_asignar):
-	'Asigna como grosor el valor grosor_asignar si el área de la geometría es inferior que el valor area'
+	'Asigna como grosor el valor grosor_asignar si el área de la geometría es inferior o igual que el valor area'
 	if not es_area(geometry):
 		return representations
 
@@ -2906,7 +2907,7 @@ def asignar_grosor_si_area_inferior_o_igual_valor(geometry, code_drawing, repres
 
 @dynamic_representation_rule()
 def asignar_grosor_si_area_igual_valor(geometry, code_drawing, representations, nombre_codigo, area, grosor_asignar):
-	'Asigna como grosor el valor grosor_asignar si el área de la geometría es inferior o igual que el valor area'
+	'Asigna como grosor el valor grosor_asignar si el área de la geometría es igual que el valor area'
 	if not es_area(geometry):
 		return representations
 
