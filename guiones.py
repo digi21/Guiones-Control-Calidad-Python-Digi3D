@@ -1851,23 +1851,6 @@ def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, r
 	return representations
 
 @dynamic_representation_rule()
-def asignar_color_relleno_si_atributo_bbdd_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
-	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
-		return representations
-
-	atributosCodigo = localiza_codigo_en_geometria(geometry, nombre_codigo).attributes
-
-	if nombre_atributo not in atributosCodigo:
-		return representations
-
-	if compara_valor_menor_texto(atributosCodigo[nombre_atributo], valor_esperado):
-		representations[0].fill_type = digi3d.FillType.Color
-		representations[0].fill_color = texto_a_color(color_asignar)
-
-	return representations
-
-@dynamic_representation_rule()
 def asignar_color_relleno_si_atributo_bbdd_menor_o_igual_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
 	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo de BBDD nombre_atributo tiene un valor inferior que igual a valor_esperado'
 	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
@@ -1990,21 +1973,6 @@ def asignar_color_relleno_si_multiples_atributos_bbdd_igual_valores(geometry, co
 	
 	representations[0].fill_type = digi3d.FillType.Color
 	representations[0].fill_color = texto_a_color(color_asignar)
-	return representations
-
-@dynamic_representation_rule()
-def asignar_color_relleno_si_atributo_diccionario_atributos_menor_valor(geometry, code_drawing, representations, nombre_codigo, nombre_atributo, valor_esperado, color_asignar):
-	'Asigna como color de relleno el valor color_asignar al código nombre_codigo si el atributo nombre_atributo tiene un valor inferior que valor_esperado'
-	if not compara_codigos_con_comodines(code_drawing.code, nombre_codigo):
-		return representations
-
-	if nombre_atributo not in geometry.attributes:
-		return representations
-
-	if compara_valor_menor_texto(geometry.attributes[nombre_atributo], valor_esperado):
-		representations[0].fill_type = digi3d.FillType.Color
-		representations[0].fill_color = texto_a_color(color_asignar)
-
 	return representations
 
 @dynamic_representation_rule()
